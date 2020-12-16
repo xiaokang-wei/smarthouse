@@ -33,7 +33,7 @@
                 <table id="bootstrap-table"></table>
             </div>
 
-                <table id="demo"></table>
+                <table id="demo" class="table table-bordered"></table>
 
 
         </div>
@@ -103,7 +103,7 @@
                         var actions = [];
                         actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.editTab(\'' + row.userId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
                         actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.userId + '\')"><i class="fa fa-remove"></i>删除</a> ');
-                        actions.push('<a class="btn btn-success btn-xs ' + listFlag + '" href="javascript:void(0)" onclick=selectList(\'' + row.userName + '\')><i class="fa fa-edit"></i>查看订单</a> ');
+                        actions.push('<a class="btn btn-info btn-xs ' + listFlag + '" href="javascript:void(0)" onclick=selectList(\'' + row.userName + '\')><i class="fa fa-search"></i>查看订单</a> ');
 
                         return actions.join('');
                     }
@@ -114,7 +114,6 @@
 
 
     function selectList(userName) {
-        alert(userName)
         layui.use('table', function () {
             var table = layui.table;
             layer.config({
@@ -139,9 +138,9 @@
                         {field: 'listId', title: '订单编号', width: 80, sort: true}
                         , {field: 'listName', title: '订单名称', width: 80}
                         , {field: 'listClient', title: '客户姓名', width: 80}
-                        , {field: 'listAmount', title: '订单数量', width: 177}
+                        , {field: 'listAmount', title: '订单数量', width: 80}
                         , {field: 'seller', title: '销售', width: 80, sort: true}
-                        , {field: 'creatTime', title: '创建时间', width: 80, sort: true}
+                        , {field: 'createTime', title: '创建时间', width: 180, sort: true}
                     ]]
             })
             ;
