@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.system.task.mapper.TaskMapper">
+<!--     private Integer tid;
+    //任务标题
+    private String title;
+    //执行雇员
+    private Emp experson;
+    //任务内容
+    private String t_content;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date starttime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date endtime;
+    //紧急程度
+    private  String priority;
+    //任务状态
+    private String exstatus;
+    //创建者
+    private String creatby;
+    //创建时间
+    private Date creattime;
+
+     private Integer eId;
+    private Integer empNo;
+    private String eName;
+    private String eSex;
+    private Integer mgrNo;
+    private String post;
+    private String phone;
+    private Integer deptNo;
+    private String eStatus;
+-->
+
+    <resultMap type="com.ruoyi.project.system.task.domain.Task" id="TaskResult">
+        <id     property="tid"        column="tid"       />
+        <result property="title" column="title"/>
+        <result property="t_content"      column="t_content"     />
+        <result property="starttime"      column="starttime"     />
+        <result property="endtime"      column="endtime"     />
+        <result property="priority"        column="priority"        />
+        <result property="exstatus"      column="exstatus"     />
+        <result property="creatby"    column="creatby"   />
+        <result property="creattime"    column="creattime"   />
+        <association property="experson" javaType="com.ruoyi.project.system.hr.emp.domain.Emp">
+            <id property="eId" column="e_id"></id>
+            <result property="empNo" column="emp_no"></result>
+            <result property="eName" column="e_name"></result>
+            <result property="eSex" column="e_sex"></result>
+            <result property="mgrNo" column="mgr_no"></result>
+            <result property="post" column="post"></result>
+            <result property="phone" column="phone"></result>
+            <result property="deptNo" column="dept_no"></result>
+            <result property="eStatus" column="e_status"></result>
+        </association>
+    </resultMap>
+    <resultMap type="com.ruoyi.project.system.task.domain.ExcelTask" id="Excel">
+        <id     property="tid"        column="tid"       />
+        <result property="title" column="title"/>
+        <result property="t_content"      column="t_content"     />
+        <result property="starttime"      column="starttime"     />
+        <result property="endtime"      column="endtime"     />
+        <result property="priority"        column="priority"        />
+        <result property="exstatus"      column="exstatus"     />
+        <result property="creatby"    column="creatby"   />
+        <result property="creattime"    column="creattime"   />
+        <result property="experson" column="e_name"/>
+
+    </resultMap>
+
+    <sql id="selectTaskVo">
+        select tid, experson, t_content, starttime, endtime, priority, exstatus, creatby,creattime
+		from t_task
+    </sql>
+
+    <select id="selectTaskList" parameterType="com.ruoyi.project.system.task.domain.Task" resultMap="TaskResult">
+        select t.tid,t.title, t.experson, t.t_content, t.starttime, t.endtime, t.priority, t.exstatus, t.creatby,t.creattime,e.e_id,e.emp_no,e.e_name,e.e_sex,e.mgr_no,e.post,e.phone,e.dept_no,e.e_status
+        from t_task t
+        join t_emp e on t.experson=e.emp_no
+        <where>
+            <if test="title != null and title != ''">
+                AND t.title =#{title}
+            </if>
+            <if test="exstatus != null and exstatus != ''">
+                AND t.exstatus = #{exstatus}
+            </if>
+            <if test="priority != null and priority != ''">
+                AND t.priority = #{priority}
+            </if>
+            <if test="experson!=null">
+                <if test="experson.eName != null and experson.eName != ''">
+                    AND e.e_name like concat('%', #{experson.eName}, '%')
+                </if>
+            </if>
+
+        </where>
+    </select>
+    <select id="selectEmpTree" resultType="com.ruoyi.framework.web.domain.Ztree">
+        select emp_no id,e_name name,mgr_no pid from t_emp
+    </select>
+        <resultMap type="com.ruoyi.project.system.hr.emp.domain.Emp" id="EmpResult">
+            <id     property="eId"       column="e_id"      />
+            <result property="empNo"       column="emp_no"      />
+            <result property="eName"    column="e_name"   />
+            <result property="eSex"     column="e_sex"    />
+            <result property="mgrNo"        column="mgr_no"        />
+            <result property="post"  column="post"  />
+            <result property="phone"          column="phone"          />
+            <result property="deptNo"       column="dept_no"       />
+            <result property="eStatus"     column="estatus"     />
+        </resultMap>
+    <select id="selectEmpById" resultMap="EmpResult" parameterType="long">
+        select * from t_emp where emp_no=#{empId}
+    </select>
+
+    <insert id="addSave" parameterType="com.ruoyi.project.system.task.domain.Task">
+        insert into t_task(
+        <if test="title != null and title != ''">title,</if>
+        <if test="t_content != null and t_content != ''">t_content,</if>
+        <if test="starttime != null ">starttime,</if>
+        <if test="endtime != null ">endtime,</if>
+        <if test="priority != null and priority != ''">priority,</if>
+        <if test="exstatus != null and exstatus != ''">exstatus,</if>
+        <if test="creatby != null and creatby != ''">creatby,</if>
+        creattime,
+        <if test="experson.empNo != null and experson.empNo!=''">experson</if>
+        )values(
+        <if test="title != null and title != ''">#{title},</if>
+        <if test="t_content != null and t_content != ''">#{t_content},</if>
+        <if test="starttime != null ">#{starttime},</if>
+        <if test="endtime != null ">#{endtime},</if>
+        <if test="priority != null and priority != ''">#{priority},</if>
+        <if test="exstatus != null and exstatus != ''">#{exstatus},</if>
+        <if test="creatby != null and creatby != ''">#{creatby},</if>
+        sysdate(),
+        <if test="experson.empNo != null and experson.empNo!=''">#{experson.empNo}</if>
+        )
+    </insert>
+
+    <select id="selectTaskByTid" resultMap="TaskResult">
+        select t.tid,t.title, t.experson, t.t_content, t.starttime, t.endtime, t.priority, t.exstatus, t.creatby,t.creattime,e.e_id,e.emp_no,e.e_name,e.e_sex,e.mgr_no,e.post,e.phone,e.dept_no,e.e_status
+        from t_task t
+        join t_emp e on t.experson=e.emp_no
+        where t.tid=#{tid}
+    </select>
+
+    <select id="selectPrioritys" resultType="com.ruoyi.project.system.task.domain.Selected">
+        select DISTINCT priority from t_task
+    </select>
+
+    <update id="editSave" parameterType="com.ruoyi.project.system.task.domain.Task">
+        update t_task
+        <set>
+            <if test="title != null and title != ''"> title=#{title},</if>
+            <if test="t_content != null and t_content != ''"> t_content=#{t_content} ,</if>
+            <if test="starttime != null "> starttime=#{starttime},</if>
+            <if test="endtime != null "> endtime=#{endtime},</if>
+            <if test="priority != null and priority != ''"> priority=#{priority},</if>
+            <if test="experson.empNo != null and experson.empNo!=''"> experson=#{experson.empNo}</if>
+            <if test="exstatus != null and exstatus != ''"> exstatus=#{exstatus}</if>
+        </set>
+        where tid = #{tid}
+    </update>
+
+    <delete id="remove" parameterType="list">
+        delete from t_task where tid in <foreach collection="ids" separator="," open="(" close=")" item="id">
+        #{id}
+    </foreach>
+    </delete>
+
+    <select id="selectExport" resultMap="Excel">
+        select t.tid,t.title, t.experson, t.t_content, t.starttime, t.endtime, t.priority, t.exstatus, t.creatby,t.creattime,e.e_id,e.emp_no,e.e_name,e.e_sex,e.mgr_no,e.post,e.phone,e.dept_no,e.e_status
+        from t_task t
+        join t_emp e on t.experson=e.emp_no
+        <where>
+            <if test="title != null and title != ''">
+                AND t.title =#{title}
+            </if>
+            <if test="exstatus != null and exstatus != ''">
+                AND t.exstatus = #{exstatus}
+            </if>
+            <if test="priority != null and priority != ''">
+                AND t.priority = #{priority}
+            </if>
+            <if test="experson!=null">
+                <if test="experson.eName != null and experson.eName != ''">
+                    AND e.e_name like concat('%', #{experson.eName}, '%')
+                </if>
+            </if>
+        </where>
+    </select>
+</mapper>
