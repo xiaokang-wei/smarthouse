@@ -78,6 +78,18 @@ public class UserConstants
     public final static String CONFIG_KEY_UNIQUE = "0";
     public final static String CONFIG_KEY_NOT_UNIQUE = "1";
 
+
+
+    /** 销售管理-客户管理手机号码是否唯一的返回结果 */
+    public final static String Sell_USER_PHONE_UNIQUE = "0";
+    public final static String Sell_USER_PHONE_NOT_UNIQUE = "1";
+
+    /** 销售管理-订单管理订单是否唯一的返回结果 */
+    public final static String SELL_LIST_NAME_UNIQUE = "0";
+    public final static String SELL_LIST_NAME_NOT_UNIQUE = "1";
+
+
+
     /**
      * 密码长度限制
      */
