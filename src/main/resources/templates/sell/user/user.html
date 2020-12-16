@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('客户列表')"/>
+    <th:block th:include="include :: layout-latest-css"/>
+    <th:block th:include="include :: ztree-css"/>
+</head>
+
+<body class="gray-bg">
+
+
+<div class="ui-layout-center">
+    <div class="container-div">
+        <div class="row">
+
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="sell:user:add">
+                    <i class="fa fa-plus"></i> 新增
+                </a>
+                <a class="btn btn-primary single disabled" onclick="$.operate.editTab()"
+                   shiro:hasPermission="sell:user:edit">
+                    <i class="fa fa-edit"></i> 修改
+                </a>
+                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()"
+                   shiro:hasPermission="sell:user:remove">
+                    <i class="fa fa-remove"></i> 删除
+                </a>
+
+            </div>
+
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+
+                <table id="demo"></table>
+
+
+        </div>
+    </div>
+</div>
+
+<th:block th:include="include :: footer"/>
+<th:block th:include="include :: layout-latest-js"/>
+<th:block th:include="include :: ztree-js"/>
+<script th:inline="javascript">
+    var editFlag = [[${@permission.hasPermi('sell:user:edit')}]];
+    var removeFlag = [[${@permission.hasPermi('sell:user:remove')}]];
+    var listFlag = [[${@permission.hasPermi('sell:user:list')}]];
+
+    var prefix = ctx + "sell/user";
+
+    $(function () {
+        var panehHidden = false;
+        if ($(this).width() < 769) {
+            panehHidden = true;
+        }
+        $('body').layout({initClosed: panehHidden, west__size: 185});
+        queryUserList();
+        queryDeptTree();
+    });
+
+    function queryUserList() {
+        var options = {
+            url: prefix + "/list",
+            createUrl: prefix + "/add",
+            updateUrl: prefix + "/edit/{id}",
+            listUrl: prefix + "/sellList{id}",
+            removeUrl: prefix + "/remove",
+            exportUrl: prefix + "/export",
+            importUrl: prefix + "/importData",
+            importTemplateUrl: prefix + "/importTemplate",
+            sortName: "createTime",
+            sortOrder: "desc",
+            modalName: "用户",
+            columns: [{
+                checkbox: true
+            },
+                {
+                    field: 'userId',
+                    title: '客户ID'
+                },
+
+                {
+                    field: 'userName',
+                    title: '客户名称',
+                },
+
+                {
+                    field: 'phonenumber',
+                    title: '手机'
+                },
+
+                {
+                    field: 'createTime',
+                    title: '时间',
+                    sortable: true
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.editTab(\'' + row.userId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.userId + '\')"><i class="fa fa-remove"></i>删除</a> ');
+                        actions.push('<a class="btn btn-success btn-xs ' + listFlag + '" href="javascript:void(0)" onclick=selectList(\'' + row.userName + '\')><i class="fa fa-edit"></i>查看订单</a> ');
+
+                        return actions.join('');
+                    }
+                }]
+        };
+        $.table.init(options);
+    }
+
+
+    function selectList(userName) {
+        alert(userName)
+        layui.use('table', function () {
+            var table = layui.table;
+            layer.config({
+                skin: 'layui-layer-lan'
+            })
+            //第一个实例
+            table.render({
+                elem: '#demo',
+                height: 312,
+                where: {userName: userName},
+                url: prefix + '/sellList',//数据接口
+                method: "post",
+                parseData: function (res) { //res 即为原始返回的数据
+                    return {
+                        "code": res.code, //解析接口状态
+                        "count": res.total, //解析数据长度
+                        "data": res.rows //解析数据列表
+                    };
+                },
+                cols:
+                    [[ //表头
+                        {field: 'listId', title: '订单编号', width: 80, sort: true}
+                        , {field: 'listName', title: '订单名称', width: 80}
+                        , {field: 'listClient', title: '客户姓名', width: 80}
+                        , {field: 'listAmount', title: '订单数量', width: 177}
+                        , {field: 'seller', title: '销售', width: 80, sort: true}
+                        , {field: 'creatTime', title: '创建时间', width: 80, sort: true}
+                    ]]
+            })
+            ;
+
+        });
+
+    }
+
+    function queryDeptTree() {
+        var url = ctx + "system/dept/treeData";
+        var options = {
+            url: url,
+            expandLevel: 2,
+            onClick: zOnClick
+        };
+        $.tree.init(options);
+
+        function zOnClick(event, treeId, treeNode) {
+            $("#deptId").val(treeNode.id);
+            $("#parentId").val(treeNode.pId);
+            $.table.search();
+        }
+    }
+
+    $('#btnExpand').click(function () {
+        $._tree.expandAll(true);
+        $(this).hide();
+        $('#btnCollapse').show();
+    });
+
+    $('#btnCollapse').click(function () {
+        $._tree.expandAll(false);
+        $(this).hide();
+        $('#btnExpand').show();
+    });
+
+    $('#btnRefresh').click(function () {
+        queryDeptTree();
+    });
+
+</script>
+</body>
+
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+	<th:block th:include="include :: header('修改客户')" />
+
+</head>
+<body>
+    <div class="main-content">
+        <form class="form-horizontal" id="form-list-edit" th:object="${list}">
+            <input name="listId"  type="hidden"  th:field="*{listId}" />
+
+            <h4 class="form-header h4">基本信息</h4>
+            <div class="row">
+            	<div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label"><span style="color: red; ">*</span>订单名称：</label>
+                        <div class="col-sm-8">
+                            <input name="listName" placeholder="请输入订单名称" class="form-control" type="text" maxlength="30" th:field="*{listName}" required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label"><span style="color: red; ">*</span>客户：</label>
+                        <div class="col-sm-8">
+                            <input name="listClient" placeholder="请输入客户" class="form-control" type="text" maxlength="11" th:field="*{listClient}" required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label"><span style="color: red; ">*</span>订单总额：</label>
+                        <div class="col-sm-8">
+                            <input name="listAmount" placeholder="请输入订单总额" class="form-control" type="text" maxlength="11" th:field="*{listAmount}" required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label"><span style="color: red; ">*</span>销售人员：</label>
+                        <div class="col-sm-8">
+                            <input name="seller" placeholder="销售人员" class="form-control" type="text" maxlength="11" th:field="*{seller}" required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </div>
+
+
+	<th:block th:include="include :: footer" />
+	<th:block th:include="include :: select2-js" />
+	<script type="text/javascript">
+        var prefix = ctx + "sell/list";
+
+        $("#form-list-edit").validate({
+            onkeyup: false,
+            rules:{
+                listName:{
+                    remote: {
+                        url: ctx + "/checkSellListNameUnique",
+                        type: "post",
+                        dataType: "json",
+                        data: {
+                            "listId": function() {
+                                return $("#listId").val();
+                            },
+                            "listName" : function() {
+                                return $.common.trim($("#listName").val());
+                            }
+                        },
+                        dataFilter: function(data, type) {
+                            return $.validate.unique(data);
+                        }
+                    }
+                }
+
+            },
+            messages: {
+                "listName": {
+                    remote: "订单已经存在"
+                }
+            },
+            focusCleanup: true
+        });
+        
+        function submitHandler() {
+	        if ($.validate.form()) {
+	        	$.operate.saveTab(prefix + "/edit",  $('#form-list-edit').serialize());
+	        }
+	    }
+
+    </script>
+</body>
+</html>

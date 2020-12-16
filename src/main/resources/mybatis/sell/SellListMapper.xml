@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.sell.list.mapper.SellListMapper">
+
+	<resultMap type="SellList" id="ListResult">
+		<id     property="listId"       column="list_id"      />
+		<result property="listName"     column="list_name"    />
+		<result property="listClient"  column="list_client"  />
+		<result property="listAmount"   column="list_amount"  />
+		<result property="seller"   column="seller"  />
+		<result property="createTime"   column="create_time"  />
+
+	</resultMap>
+
+
+	<sql id="selectSellListVo">
+        select  list_id, list_name, list_client, list_amount, seller, create_time
+		from sell_list
+    </sql>
+
+	<!--加载信息-->
+	<select id="selectSellList" parameterType="SellList" resultMap="ListResult">
+		<include refid="selectSellListVo"/>
+		<where>
+			<if test="listName != null and listName != ''">
+				AND list_name like concat('%', #{listName}, '%')
+			</if>
+		</where>
+	</select>
+
+
+	<!--根据订单名称获取订单信息-->
+	<select id="checkSellListNameUnique" parameterType="String" resultMap="ListResult">
+		<include refid="selectSellListVo"/>
+		where list_name=#{list_name}
+	</select>
+
+	<!--新增订单信息-->
+	<insert id="insertSellList"  parameterType="SellList" useGeneratedKeys="true" keyProperty="listId">
+		insert into sell_list(
+		<if test="listId != null and listId != 0">list_id,</if>
+		<if test="listName != null and listName != ''">list_name,</if>
+		<if test="listClient != null and listClient != ''">list_client,</if>
+		<if test="listAmount != null and listAmount != ''">list_amount,</if>
+		<if test="seller != null and seller != ''">seller,</if>
+		create_time
+		)values(
+		<if test="listId != null and listId != 0">#{listId},</if>
+		<if test="listName != null and listName != ''">#{listName},</if>
+		<if test="listClient != null and listClient != ''">#{listClient},</if>
+		<if test="listAmount != null and listAmount != ''">#{listAmount},</if>
+		<if test="seller != null and seller != ''">#{seller},</if>
+		sysdate()
+		)
+	</insert>
+
+	<!--删除订单信息-->
+	<delete id="deleteSellListByIds" parameterType="Long">
+		delete from sell_list  where list_id in
+		<foreach collection="array" item="listId" open="(" separator="," close=")">
+			#{listId}
+		</foreach>
+	</delete>
+
+	<!--根据Id获取订单信息-->
+	<select id="selectSellListById" resultMap="ListResult">
+		<include refid="selectSellListVo"/>
+		where list_id=#{listId}
+	</select>
+
+	<!--修改客户信息-->
+	<update id="updateSellList" parameterType="SellList">
+		update sell_list
+		<set>
+			<if test="listName != null and listName != ''">list_name = #{listName},</if>
+			<if test="listClient != null and listClient != ''">list_client = #{listClient},</if>
+			<if test="listAmount != null and listAmount != ''">list_amount = #{listAmount},</if>
+			<if test="seller != null and seller != ''">seller = #{seller},</if>
+			create_time = sysdate()
+		</set>
+		where list_id = #{listId}
+	</update>
+	<select id="selectSellListByName" parameterType="string" resultMap="ListResult">
+		<include refid="selectSellListVo">
+		</include>
+		where list_client = #{userName}
+	</select>
+
+
+ 	
+
+
+</mapper> 
