@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.system.hr.emp.mapper.EmpMapper">
+    <resultMap type="com.ruoyi.project.system.hr.emp.domain.Emp" id="EmpResult">
+        <id     property="eId"       column="e_id"      />
+        <result property="empNo"       column="emp_no"      />
+        <result property="eName"    column="e_name"   />
+        <result property="eSex"     column="e_sex"    />
+        <result property="mgrNo"        column="mgr_no"        />
+        <result property="post"  column="post"  />
+        <result property="phone"          column="phone"          />
+        <result property="deptNo"       column="dept_no"       />
+        <result property="eStatus"     column="estatus"     />
+    </resultMap>
+
+    <resultMap type="com.ruoyi.project.system.hr.emp.vo.EmpVO" id="EmpVOResult">
+        <id     property="eId"       column="e_id"      />
+        <result property="empNo"       column="emp_no"      />
+        <result property="eName"    column="e_name"   />
+        <result property="eSex"     column="e_sex"    />
+        <result property="mgrNo"        column="mgr_no"        />
+        <result property="post"  column="post"  />
+        <result property="phone"          column="phone"          />
+        <result property="deptNo"       column="dept_no"       />
+        <result property="eStatus"     column="e_status"     />
+        <result property="mgr"         column="mgr"         />
+        <result property="deptName"       column="d_name"       />
+    </resultMap>
+    <sql id="empVOSql">
+        select e.e_id,e.e_name,e.mgr_no,e.e_sex,e.emp_no,e.post,e.phone,e.e_status,ee.e_name 'mgr',d.d_name
+        from t_emp e left join t_emp ee  on e.mgr_no = ee.emp_no join t_dept d on e.dept_no = d.d_id
+
+    </sql>
+<select id="selectEmpList" resultMap="EmpVOResult" parameterType="Emp" resultType="com.ruoyi.project.system.hr.emp.vo.EmpVO">
+    <include refid="empVOSql">
+    </include>
+    <if test="eName != null and eName != ''">
+        where e.e_name like concat('%', #{eName}, '%')
+    </if>
+    <if test="eStatus != null and eStatus != ''">
+        AND e.e_status = #{eStatus}
+    </if>
+    <if test="phone != null and phone != ''">
+        AND e.phone like concat('%', #{phone}, '%')
+    </if>
+    <if test="deptNo != null and deptNo != 0">
+        AND e.dept_no = #{deptNo}
+    </if>
+
+</select>
+
+    <update id="updateEmp" parameterType="com.ruoyi.project.system.hr.emp.domain.Emp" >
+        update t_emp
+        <set>
+            <if test="eId != null and eId != 0">e_id = #{eId},</if>
+            <if test="empNo != null and empNo != ''">emp_no = #{empNo},</if>
+            <if test="eName != null and eName != ''">e_name = #{eName},</if>
+            <if test="eSex != null and eSex != ''">e_sex = #{eSex},</if>
+            <if test="mgrNo != null and mgrNo != ''">mgr_no = #{mgrNo},</if>
+            <if test="post != null and post != ''">post = #{post},</if>
+            <if test="phone != null and phone != ''">phone = #{phone},</if>
+            <if test="deptNo != null and deptNo != ''">dept_no = #{deptNo},</if>
+            <if test="eStatus != null and eStatus != ''">e_status = #{eStatus},</if>
+        </set>
+        where e_id = #{eId}
+    </update>
+
+    <insert id="insertEmp" parameterType="Emp" >
+        insert into t_emp(
+        <if test="empNo != null and empNo != ''">emp_no, </if>
+        <if test="eName != null and eName != ''">e_name,</if>
+        <if test="eSex != null and eSex != ''">e_sex, </if>
+        <if test="mgrNo != null ">mgr_no, </if>
+        <if test="post != null and post != ''">post, </if>
+        <if test="phone != null and phone != ''">phone, </if>
+        <if test="deptNo != null and deptNo != ''">dept_no, </if>
+        <if test="eStatus != null and eStatus != ''">e_status </if>
+        )values(
+        <if test="empNo != null and empNo != ''">#{empNo}, </if>
+        <if test="eName != null and eName != ''">#{eName},</if>
+        <if test="eSex != null and eSex != ''">#{eSex},</if>
+        <if test="mgrNo != null  ">#{mgrNo},</if>
+        <if test="post != null and post != ''">#{post}, </if>
+        <if test="phone != null and phone != ''">#{phone}, </if>
+        <if test="deptNo != null and deptNo != ''">#{deptNo},</if>
+        <if test="eStatus != null and eStatus != ''"> #{eStatus}</if>
+        )
+
+    </insert>
+
+    <select id="selectMaxEmpNo" resultType="int">
+        select max(emp_no) from t_emp
+    </select>
+
+    <select id="selectMgr" resultMap="EmpVOResult" resultType="com.ruoyi.project.system.hr.emp.vo.EmpVO">
+    select  DISTINCT ee.e_name 'mgr',ee.emp_no
+        from t_emp e  join t_emp ee  on e.mgr_no = ee.emp_no
+    </select>
+
+    <select id="selectEmpListById" resultMap="EmpVOResult" resultType="com.ruoyi.project.system.hr.emp.vo.EmpVO">
+        <include refid="empVOSql">
+        </include>
+        <if test="eId != null and eId != 0">
+            where e.e_id = #{eId}
+        </if>
+    </select>
+
+    <select id="selectMgrById" resultMap="EmpVOResult" resultType="com.ruoyi.project.system.hr.emp.vo.EmpVO">
+         select  DISTINCT ee.e_name 'mgr',ee.emp_no
+        from t_emp e  join t_emp ee  on e.mgr_no = ee.emp_no
+        <if test="eId != null and eId != 0">
+            where e.e_id = #{eId}
+        </if>
+    </select>
+
+    <select id="selectByEmpNo"  parameterType="integer" resultType="integer" >
+        SELECT mgr_no FROM t_emp
+        <if test="empNo != null and empNo != 0">
+        where mgr_no=#{empNo}
+        </if>
+    </select>
+
+    <select id="selectPostList" resultMap="EmpResult">
+        select  DISTINCT post from t_emp
+    </select>
+
+    <delete id="removeEmpById" parameterType="string">
+        delete from t_emp
+        where e_id in
+        <foreach collection="array" item="eId" separator="," open="(" close=")">
+            #{eId}
+        </foreach>
+    </delete>
+
+    <select id="selectEmpByIds" resultMap="EmpResult" parameterType="string">
+        select * from t_emp
+         where e_id in
+         <foreach collection="array" item="eId" separator="," open="(" close=")">
+             #{eId}
+         </foreach>
+    </select>
+
+
+    <!--    <sql id="selectUserVo">-->
+<!--        select  u.user_id, u.dept_id, u.login_name, u.user_name, u.email, u.avatar, u.phonenumber, u.sex, u.password, u.salt, u.status, u.del_flag, u.login_ip, u.login_date, u.create_time, u.remark,-->
+<!--       		    d.dept_id, d.parent_id, d.dept_name, d.order_num, d.leader, d.status as dept_status,-->
+<!--       		    r.role_id, r.role_name, r.role_key, r.role_sort, r.data_scope, r.status as role_status-->
+<!--		from sys_user u-->
+<!--			 left join sys_dept d on u.dept_id = d.dept_id-->
+<!--			 left join sys_user_role ur on u.user_id = ur.user_id-->
+<!--			 left join sys_role r on r.role_id = ur.role_id-->
+<!--    </sql>-->
+
+<!--    <select id="selectUserList" parameterType="User" resultMap="UserResult">-->
+<!--        select u.user_id, u.dept_id, u.login_name, u.user_name, u.email, u.avatar, u.phonenumber, u.password, u.sex, u.salt, u.status, u.del_flag, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark, d.dept_name, d.leader from sys_user u-->
+<!--        left join sys_dept d on u.dept_id = d.dept_id-->
+<!--        where u.del_flag = '0'-->
+<!--        <if test="loginName != null and loginName != ''">-->
+<!--            AND u.login_name like concat('%', #{loginName}, '%')-->
+<!--        </if>-->
+<!--        <if test="status != null and status != ''">-->
+<!--            AND u.status = #{status}-->
+<!--        </if>-->
+<!--        <if test="phonenumber != null and phonenumber != ''">-->
+<!--            AND u.phonenumber like concat('%', #{phonenumber}, '%')-->
+<!--        </if>-->
+<!--        <if test="params.beginTime != null and params.beginTime != ''">&lt;!&ndash; 开始时间检索 &ndash;&gt;-->
+<!--            AND date_format(u.create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')-->
+<!--        </if>-->
+<!--        <if test="params.endTime != null and params.endTime != ''">&lt;!&ndash; 结束时间检索 &ndash;&gt;-->
+<!--            AND date_format(u.create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')-->
+<!--        </if>-->
+<!--        <if test="deptId != null and deptId != 0">-->
+<!--            AND (u.dept_id = #{deptId} OR u.dept_id IN ( SELECT t.dept_id FROM sys_dept t WHERE FIND_IN_SET (#{deptId},ancestors) ))-->
+<!--        </if>-->
+<!--        &lt;!&ndash; 数据范围过滤 &ndash;&gt;-->
+<!--        ${params.dataScope}-->
+<!--    </select>-->
+
+<!--    <select id="selectAllocatedList" parameterType="User" resultMap="UserResult">-->
+<!--        select distinct u.user_id, u.dept_id, u.login_name, u.user_name, u.email, u.avatar, u.phonenumber, u.status, u.create_time-->
+<!--        from sys_user u-->
+<!--        left join sys_dept d on u.dept_id = d.dept_id-->
+<!--        left join sys_user_role ur on u.user_id = ur.user_id-->
+<!--        left join sys_role r on r.role_id = ur.role_id-->
+<!--        where u.del_flag = '0' and r.role_id = #{roleId}-->
+<!--        <if test="loginName != null and loginName != ''">-->
+<!--            AND u.login_name like concat('%', #{loginName}, '%')-->
+<!--        </if>-->
+<!--        <if test="phonenumber != null and phonenumber != ''">-->
+<!--            AND u.phonenumber like concat('%', #{phonenumber}, '%')-->
+<!--        </if>-->
+<!--        &lt;!&ndash; 数据范围过滤 &ndash;&gt;-->
+<!--        ${params.dataScope}-->
+<!--    </select>-->
+
+<!--    <select id="selectUnallocatedList" parameterType="User" resultMap="UserResult">-->
+<!--        select distinct u.user_id, u.dept_id, u.login_name, u.user_name, u.email, u.avatar, u.phonenumber, u.status, u.create_time-->
+<!--        from sys_user u-->
+<!--        left join sys_dept d on u.dept_id = d.dept_id-->
+<!--        left join sys_user_role ur on u.user_id = ur.user_id-->
+<!--        left join sys_role r on r.role_id = ur.role_id-->
+<!--        where u.del_flag = '0' and (r.role_id != #{roleId} or r.role_id IS NULL)-->
+<!--        and u.user_id not in (select u.user_id from sys_user u inner join sys_user_role ur on u.user_id = ur.user_id and ur.role_id = #{roleId})-->
+<!--        <if test="loginName != null and loginName != ''">-->
+<!--            AND u.login_name like concat('%', #{loginName}, '%')-->
+<!--        </if>-->
+<!--        <if test="phonenumber != null and phonenumber != ''">-->
+<!--            AND u.phonenumber like concat('%', #{phonenumber}, '%')-->
+<!--        </if>-->
+<!--        &lt;!&ndash; 数据范围过滤 &ndash;&gt;-->
+<!--        ${params.dataScope}-->
+<!--    </select>-->
+
+<!--    <select id="selectUserByLoginName" parameterType="String" resultMap="UserResult">-->
+<!--        <include refid="selectUserVo"/>-->
+<!--        where u.login_name = #{userName}-->
+<!--    </select>-->
+
+<!--    <select id="selectUserByPhoneNumber" parameterType="String" resultMap="UserResult">-->
+<!--        <include refid="selectUserVo"/>-->
+<!--        where u.phonenumber = #{phonenumber}-->
+<!--    </select>-->
+
+<!--    <select id="selectUserByEmail" parameterType="String" resultMap="UserResult">-->
+<!--        <include refid="selectUserVo"/>-->
+<!--        where u.email = #{email}-->
+<!--    </select>-->
+
+<!--    <select id="checkLoginNameUnique" parameterType="String" resultType="int">-->
+<!--		select count(1) from sys_user where login_name=#{loginName}-->
+<!--	</select>-->
+
+<!--    <select id="checkPhoneUnique" parameterType="String" resultMap="UserResult">-->
+<!--		select user_id, phonenumber from sys_user where phonenumber=#{phonenumber}-->
+<!--	</select>-->
+
+<!--    <select id="checkEmailUnique" parameterType="String" resultMap="UserResult">-->
+<!--		select user_id, email from sys_user where email=#{email}-->
+<!--	</select>-->
+
+<!--    <select id="selectUserById" parameterType="Long" resultMap="UserResult">-->
+<!--        <include refid="selectUserVo"/>-->
+<!--        where u.user_id = #{userId}-->
+<!--    </select>-->
+
+<!--    <delete id="deleteUserById" parameterType="Long">-->
+<!-- 		delete from sys_user where user_id = #{userId}-->
+<!-- 	</delete>-->
+
+<!--    <delete id="deleteUserByIds" parameterType="Long">-->
+<!--        update sys_user set del_flag = '2' where user_id in-->
+<!--        <foreach collection="array" item="userId" open="(" separator="," close=")">-->
+<!--            #{userId}-->
+<!--        </foreach>-->
+<!--    </delete>-->
+
+<!--    <update id="updateUser" parameterType="User">-->
+<!--        update sys_user-->
+<!--        <set>-->
+<!--            <if test="deptId != null and deptId != 0">dept_id = #{deptId},</if>-->
+<!--            <if test="loginName != null and loginName != ''">login_name = #{loginName},</if>-->
+<!--            <if test="userName != null and userName != ''">user_name = #{userName},</if>-->
+<!--            <if test="email != null and email != ''">email = #{email},</if>-->
+<!--            <if test="phonenumber != null and phonenumber != ''">phonenumber = #{phonenumber},</if>-->
+<!--            <if test="sex != null and sex != ''">sex = #{sex},</if>-->
+<!--            <if test="avatar != null and avatar != ''">avatar = #{avatar},</if>-->
+<!--            <if test="password != null and password != ''">password = #{password},</if>-->
+<!--            <if test="salt != null and salt != ''">salt = #{salt},</if>-->
+<!--            <if test="status != null and status != ''">status = #{status},</if>-->
+<!--            <if test="loginIp != null and loginIp != ''">login_ip = #{loginIp},</if>-->
+<!--            <if test="loginDate != null">login_date = #{loginDate},</if>-->
+<!--            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>-->
+<!--            <if test="remark != null">remark = #{remark},</if>-->
+<!--            update_time = sysdate()-->
+<!--        </set>-->
+<!--        where user_id = #{userId}-->
+<!--    </update>-->
+
+<!--    <insert id="insertUser" parameterType="User" useGeneratedKeys="true" keyProperty="userId">-->
+<!--        insert into sys_user(-->
+<!--        <if test="userId != null and userId != 0">user_id,</if>-->
+<!--        <if test="deptId != null and deptId != 0">dept_id,</if>-->
+<!--        <if test="loginName != null and loginName != ''">login_name,</if>-->
+<!--        <if test="userName != null and userName != ''">user_name,</if>-->
+<!--        <if test="email != null and email != ''">email,</if>-->
+<!--        <if test="avatar != null and avatar != ''">avatar,</if>-->
+<!--        <if test="phonenumber != null and phonenumber != ''">phonenumber,</if>-->
+<!--        <if test="sex != null and sex != ''">sex,</if>-->
+<!--        <if test="password != null and password != ''">password,</if>-->
+<!--        <if test="salt != null and salt != ''">salt,</if>-->
+<!--        <if test="status != null and status != ''">status,</if>-->
+<!--        <if test="createBy != null and createBy != ''">create_by,</if>-->
+<!--        <if test="remark != null and remark != ''">remark,</if>-->
+<!--        create_time-->
+<!--        )values(-->
+<!--        <if test="userId != null and userId != ''">#{userId},</if>-->
+<!--        <if test="deptId != null and deptId != ''">#{deptId},</if>-->
+<!--        <if test="loginName != null and loginName != ''">#{loginName},</if>-->
+<!--        <if test="userName != null and userName != ''">#{userName},</if>-->
+<!--        <if test="email != null and email != ''">#{email},</if>-->
+<!--        <if test="avatar != null and avatar != ''">#{avatar},</if>-->
+<!--        <if test="phonenumber != null and phonenumber != ''">#{phonenumber},</if>-->
+<!--        <if test="sex != null and sex != ''">#{sex},</if>-->
+<!--        <if test="password != null and password != ''">#{password},</if>-->
+<!--        <if test="salt != null and salt != ''">#{salt},</if>-->
+<!--        <if test="status != null and status != ''">#{status},</if>-->
+<!--        <if test="createBy != null and createBy != ''">#{createBy},</if>-->
+<!--        <if test="remark != null and remark != ''">#{remark},</if>-->
+<!--        sysdate()-->
+<!--        )-->
+<!--    </insert>-->
+
+</mapper>
