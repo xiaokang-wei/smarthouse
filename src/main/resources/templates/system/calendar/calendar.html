@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+
+
+    <link rel="stylesheet" href="../layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="../layui/css/modules/laydate/default/laydate.css?v=5.0.9">
+    <link rel="stylesheet" href="../layui/css/modules/layer/default/layer.css?v=3.1.1">
+    <script src="../js/jquery.min.js"></script>
+    <script src="../layui/layui.js"></script>
+    <script src="../layer/layer.js"></script>
+    <style>
+        .layui-laydate-main{
+            width: 600px !important;
+        }
+        .laydate-set-ym span, .layui-laydate-header i{
+            font-size: 35px;
+        }
+        .layui-laydate-content td, .layui-laydate-content th{
+            padding: 7px 25px !important;
+            font-size: 30px !important;
+        }
+        .layui-laydate-header{
+            line-height: 50px !important;
+        }
+        .layui-laydate-footer span{
+            font-size: 32px !important;
+            border: none;
+        }
+        .layui-laydate-footer{
+            height: 50px !important;
+            line-height: 50px !important;
+        }
+    </style>
+</head>
+<body class="gray-bg">
+<div class="container-div">
+    <div class="row">
+        <div class="layui-inline" style="height: 70%;width: 99%;" id="test-n1" align="center"> <!-- 注意：这一层元素并不是必须的 -->
+
+        </div>
+
+        <script>
+            var flag;
+            //#test1.onmouseover
+            $(function () {
+                $.post(
+                  "calendar/getCalendar",
+                    function (data) {
+                        flag=data;
+                      var obj={};
+                        for (var i=0;i<data.length;i++){
+                            obj[data[i].date]="有待办任务";
+                        }
+                        var data1=data;
+                        layui.use('laydate', function(){
+                            var laydate = layui.laydate;
+                            //直接嵌套显示
+                            laydate.render({
+                                elem: '#test-n1'
+                                ,position: 'static'
+                                ,done: function(value, date, endDate){
+                                    test(value);
+                                },
+                                mark:obj
+                            });
+                        })
+                        function test(value) {
+                            console.log(flag)
+                            console.log(flag[0].date)
+                            for (var k=0;k<flag.length;k++){
+                                if(value==flag[k].date){
+                                    // alert(value+"--->"+flag[k].content)
+                                    layer.msg(value+"---->"+flag[k].content);
+                                }
+                            }
+                        }
+                    }
+                );
+
+
+////执行一个laydate实例
+//var ins1=laydate.render({
+//  elem: '#test1' ,//指定元素
+//  type:'date',
+//  max:+15,
+//  min:-15,
+////  show:true,
+//	trigger:"mouseover",
+//  theme:'#393D49',
+//  mark: {
+//
+//  '2020-12-17': '' //具体日期
+//  ,'2020-12-18': '有任务要执行' //如果为空字符，则默认显示数字+徽章
+//  ,'2020-12-19': '发布'
+//}
+//,done: function(value, date){
+//  if(date.year === 2020 && date.month === 12 && date.date === 17){ //点击2017年8月15日，弹出提示语
+//    ins1.hint('中国人民抗日战争胜利72周年');
+//  }
+//}
+//});
+            });
+        </script>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    var ctx="/";
+    var editFlag = [[${@permission.hasPermi('system:calendar:edit')}]];
+    var addFlag = [[${@permission.hasPermi('system:calendar:add')}]];
+    var removeFlag = [[${@permission.hasPermi('system:calendar:remove')}]];
+    var prefix = ctx + "system/calendar";
+
+
+</script>
+</body>
+</html>
