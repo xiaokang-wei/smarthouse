@@ -1,6 +1,7 @@
 package com.ruoyi.project.system.post.service;
 
 import java.util.List;
+
 import com.ruoyi.project.system.post.domain.Post;
 
 /**
@@ -13,7 +14,7 @@ public interface IPostService
     /**
      * 查询岗位信息集合
      * 
-     * @param post 岗位信息
+     * @param
      * @return 岗位信息集合
      */
     public List<Post> selectPostList(Post post);

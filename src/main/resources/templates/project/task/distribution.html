@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('项目任务分配')" />
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-post-edit" th:object="${task}">
+        <input id="pid" name="pid" type="hidden" th:field="*{pid}"/>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">项目负责人：</label>
+            <div class="col-sm-8">
+                <input class="form-control" type="text" name="ename" id="ename" th:field="*{ename}" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">项目名称：</label>
+            <div class="col-sm-8">
+                <input class="form-control" type="text" name="pname" id="pname" th:field="*{pname}" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">任务内容：</label>
+            <div class="col-sm-8">
+                <select class="form-control" name="ptask">
+                    <option>任务内容</option>
+                    <option value="1">项目设计方案</option>
+                    <option value="2">项目实施</option>
+                    <option value="3">项目上市</option>
+                </select>
+            </div>
+        </div>
+    </form>
+</div>
+<th:block th:include="include :: footer" />
+<script type="text/javascript">
+    var prefix = ctx + "project/task";
+
+    // $("#form-post-edit").validate({
+    //     onkeyup: false,
+    //     rules:{
+    //         ptask:{
+    //             remote: {
+    //                 url: ctx + "project/task/checktaskContentNameUnique",
+    //                 type: "post",
+    //                 dataType: "json",
+    //                 data: {
+    //                     "pid": function() {
+    //                         return $("input[name='pid']").val();
+    //                     },
+    //                     "ptask" : function() {
+    //                         return $.common.trim($("#taskcontent").val());
+    //                     }
+    //                 },
+    //                 dataFilter: function(data, type) {
+    //                     return $.validate.unique(data);
+    //                 }
+    //             }
+    //         },
+    //     },
+    //     // messages: {
+    //     //     "taskcontent": {
+    //     //         remote: "该任务已有人在做！请选择其他任务"
+    //     //     },
+    //     // },
+    //     focusCleanup: true
+    // });
+
+    function submitHandler() {
+        if ($.validate.form()) {
+            $.operate.save(prefix + "/edit", $('#form-post-edit').serialize());
+        }
+    }
+</script>
+</body>
+</html>

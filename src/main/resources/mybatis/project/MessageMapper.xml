@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.project.message.mapper.MessageMapper">
+
+	<resultMap type="com.ruoyi.project.project.message.domain.Message" id="MessageResult">
+		<id     property="pid"        column="p_id"       />
+		<result property="pnumber"      column="p_number"     />
+		<result property="pname"      column="p_name"     />
+		<result property="pstyle"      column="p_style"     />
+		<result property="ptype"        column="p_type"        />
+		<result property="ename"        column="e_name"        />
+		<result property="pstatus"        column="p_status"        />
+		<result property="pstarttmie"      column="p_starttime"     />
+		<result property="pendtime"      column="p_endtime"     />
+		<result property="username"      column="user_name"     />
+		<result property="remark"      column="p_remark"     />
+	</resultMap>
+
+	<select id="selectMessageAll" resultMap="MessageResult">
+		select p2.*,u.user_name
+			from (select p.p_id,p.p_number,p.p_name,p.p_style,p.p_type,
+					e.e_name,p.p_status,p_starttime,p.p_endtime,p.p_remark
+						from t_projectmanager p join t_emp e on p.p_id=e.e_id) p2 join sell_user u on p2.p_id=u.user_id
+
+	 </select>
+
+		<insert id="insertProjectMessage" parameterType="com.ruoyi.project.project.message.domain.Message" useGeneratedKeys="true" keyProperty="userId">
+			insert into t_projectmanager(
+			<if test="pid != null and pid != 0">p_id,</if>
+			<if test="pname != null ">p_name,</if>
+			<if test="pnumber != null and pnumber != ''">p_number,</if>
+			<if test="pstyle != null and pstyle != ''">p_style,</if>
+			<if test="ptype != null and ptype != ''">p_type,</if>
+			<if test="pstatus != null and pstatus != ''">p_status,</if>
+			<if test="remark != null and remark != ''">p_remark,</if>
+			p_starttime
+			)values(
+			<if test="pid != null and pid != ''">#{pid},</if>
+			<if test="pname != null and pname != ''">#{pname},</if>
+			<if test="pnumber != null and pnumber != ''">#{pnumber},</if>
+			<if test="pstyle != null and pstyle != ''">#{pstyle},</if>
+			<if test="ptype != null and ptype != ''">#{ptype},</if>
+			<if test="pstatus != null and pstatus != ''">#{pstatus},</if>
+			<if test="remark != null and remark != ''">#{remark},</if>
+			sysdate()
+			)
+		</insert>
+
+</mapper>

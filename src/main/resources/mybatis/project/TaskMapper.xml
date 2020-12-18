@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.project.task.mapper.TaskMapper">
+
+	<resultMap type="com.ruoyi.project.project.task.domain.Task" id="TaskResult">
+		<id     property="pid"        column="p_id"       />
+		<result property="pname"      column="p_name"     />
+		<result property="ptype"      column="p_type"     />
+		<result property="ptask"        column="p_task"        />
+		<result property="pstarttime"        column="p_starttime"        />
+		<result property="pendtime"      column="p_endtime"     />
+		<result property="ename"      column="e_name"     />
+	</resultMap>
+
+
+	<select id="selectTaskAll" resultMap="TaskResult">
+		select p.p_id,e.e_name,p.p_name,p.p_type,p_task,p.p_starttime,p.p_endtime
+			from t_projectmanager p join t_emp e on e.e_id=p.p_id
+	 </select>
+
+	<select id="selecttaskDistributionById" parameterType="int" resultMap="TaskResult">
+		select p.p_id,e.e_name,p.p_name,p.p_type,p_task,p.p_starttime,p.p_endtime
+			from t_projectmanager p join t_emp e on e.e_id=p.p_id
+				where p_id=#{pid}
+	</select>
+
+
+	<update id="updateTask"  parameterType="com.ruoyi.project.project.task.domain.Task">
+		update t_projectmanager
+		<set>
+			<if test="ptask != null and ptask != ''">p_task = #{ptask},</if>
+		</set>
+		where p_id = #{pid}
+	</update>
+
+
+
+</mapper> 
