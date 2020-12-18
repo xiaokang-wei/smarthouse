@@ -1,5 +1,6 @@
 package com.ruoyi.project.system.hr.emp.controller;
 
+import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.framework.aspectj.lang.annotation.Log;
 import com.ruoyi.framework.aspectj.lang.enums.BusinessType;
 import com.ruoyi.framework.web.controller.BaseController;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.lang.reflect.Array;
 import java.util.List;
@@ -124,9 +126,10 @@ public class EmpController extends BaseController {
     @GetMapping("/edit/{eId}")
     public String edit(@PathVariable("eId") Integer eId, ModelMap mmmap) {
         mmmap.put("empVO", iEmpService.selectEmpListById(eId));
+        System.out.println("empVO = " + iEmpService.selectEmpListById(eId));
         mmmap.put("post", iEmpService.selectPostList());
         List<Emp> list = iEmpService.selectPostList();
-        System.out.println(list);
+//        System.out.println(list);
         mmmap.put("empVOs",iEmpService.selectMgr());
         mmmap.put("depts", iHrDeptService.selectDeptList(null));
         return prefix + "/edit";
@@ -163,6 +166,23 @@ public class EmpController extends BaseController {
         }
         return AjaxResult.success("修改失败");
     }
+
+    /**
+     * 导出
+     * @param empVo
+     * @return
+     */
+    @Log(title = "用户管理", businessType = BusinessType.EXPORT)
+    @RequiresPermissions("system:user:export")
+    @PostMapping("/export")
+    @ResponseBody
+    public AjaxResult export(EmpVO empVo )
+    {
+        List<EmpVO> list = iEmpService.selectEmpList(empVo);
+        ExcelUtil<EmpVO> util = new ExcelUtil<EmpVO>(EmpVO.class);
+        return util.exportExcel(list, "用户数据");
+    }
+
 
 
     @RequiresPermissions("hr:emp:remove")

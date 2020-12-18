@@ -15,14 +15,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 	<select id="selectDeptList" resultMap="HrDeptResult" parameterType="com.ruoyi.project.system.hr.dept.domain.HrDept">
 		select d_id,d_name,d_pid,d_createTime,status from t_dept
-		<if test="deptName != null and deptName != ''">
-			where d_name like concat('%', #{deptName}, '%')
-		</if>
-		<if test="dPid != null ">
-			AND d_pid = #{dPid}
-		</if>
+		<where>
+			<if test="deptName != null and deptName != ''">
+				d_name like concat('%', #{deptName}, '%')
+			</if>
+			<if test="dPid != null ">
+				AND d_pid = #{dPid}
+			</if>
+			<if test="status != null ">
+				AND status = #{status}
+			</if>
+		</where>
 
-		order by d_pid
+
+		order by d_pid ,d_id
 	</select>
 
 	<select id="selectDeptById" resultMap="HrDeptResult" resultType="com.ruoyi.project.system.hr.dept.domain.HrDept" >

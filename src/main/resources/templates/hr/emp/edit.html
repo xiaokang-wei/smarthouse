@@ -59,7 +59,7 @@
                 <div class="form-group">
                     <label class="col-sm-4 control-label"><span style="color: red; ">*</span>岗位：</label>
                     <div class="col-sm-8">
-                        <select id="post" class="form-control select2-multiple" multiple>
+                        <select id="post" class="form-control select2-multiple" th:field="*{post}" multiple>
                             <option th:each="post:${post}" th:value="${post.post}" th:text="${post.post}" required></option >
                         </select>
                     </div>
@@ -69,7 +69,7 @@
                 <div class="form-group">
                     <label class="col-sm-4 control-label">用户性别：</label>
                     <div class="col-sm-8">
-                        <select name="eSex" class="form-control m-b" th:with="type=${@dict.getType('sys_user_sex')}">
+                        <select name="eSex" class="form-control m-b"  th:with="type=${@dict.getType('sys_user_sex')}">
                             <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{eSex}"></option>
                         </select>
                     </div>
@@ -81,13 +81,13 @@
                 <div class="form-group">
                     <label class="col-sm-4 control-label"><span style="color: red; ">*</span>上级领导：</label>
                     <div class="col-sm-8">
-                        <select id="msg" class="form-control select2-multiple" multiple>
+                        <select id="mgr" class="form-control select2-multiple" th:field="*{mgrNo}" multiple>
                             <option th:each="empVO:${empVOs}" th:value="${empVO.empNo}" th:text="${empVO.mgr}" } required></option>
                         </select>
                     </div>
                 </div>
             </div>
-
+        </div>
     </form>
 </div>
 <div class="row">
@@ -105,13 +105,13 @@
         if ($.validate.form()) {
             var data = $("#form-user-edit").serializeArray();
             var estatus = $("input[id='status']").is(':checked') == true ? 0 : 1;
-            var mgrNos = $.form.selectSelects("msg");
+            var mgrNos = $.form.selectSelects("mgr");
             var depts = $.form.selectSelects("dept");
             var postIds = $.form.selectSelects("post");
             data.push({"name": "eStatus", "value": estatus});
             data.push({"name": "mgrNo", "value": mgrNos});
             data.push({"name": "deptNo", "value": depts});
-            data.push({"name": "post", "value": postIds});
+            data.push({"name": "#", "value": postIds});
             $.operate.saveTab(prefix + "/edit", data);
         }
     }
@@ -145,7 +145,7 @@
             placeholder: "请选择岗位",
             allowClear: true
         });
-        $('#msg').select2({
+        $('#mgr').select2({
             placeholder: "请选择上级领导",
             allowClear: true
         });

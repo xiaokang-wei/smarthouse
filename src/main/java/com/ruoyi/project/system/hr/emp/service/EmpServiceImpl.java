@@ -2,9 +2,11 @@ package com.ruoyi.project.system.hr.emp.service;
 
 import com.ruoyi.common.exception.BusinessException;
 import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.common.utils.security.ShiroUtils;
 import com.ruoyi.project.system.hr.emp.domain.Emp;
 import com.ruoyi.project.system.hr.emp.mapper.EmpMapper;
 import com.ruoyi.project.system.hr.emp.vo.EmpVO;
+import com.ruoyi.project.system.user.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -119,6 +121,7 @@ public class EmpServiceImpl implements IEmpService {
 
         return empList;
     }
+
 
 
 }

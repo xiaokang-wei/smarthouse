@@ -13,7 +13,12 @@
                         <li>
                             部门名称：<input type="text" name="deptName"/>
                         </li>
-
+                        <li>
+                            部门状态：<select name="status" th:with="type=${@dict.getType('sys_normal_disable')}">
+                            <option value="">所有</option>
+                            <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                        </select>
+                        </li>
                         <li>
                             <a class="btn btn-primary btn-rounded btn-sm" onclick="$.treeTable.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
                         </li>
@@ -26,7 +31,9 @@
             <a class="btn btn-success" onclick="$.operate.add(100)" shiro:hasPermission="hr:dept:add">
                 <i class="fa fa-plus"></i> 新增
             </a>
-
+            <a class="btn btn-info" id="expandAllBtn">
+                <i class="fa fa-exchange"></i> 展开/折叠
+            </a>
         </div>
         <div class="col-sm-12 select-table table-striped">
             <table id="bootstrap-tree-table"></table>
@@ -43,9 +50,9 @@
 
     $(function() {
         var options = {
-            // code: "dId",
-            // parentCode: "dPid",
-            // uniqueId: "dId",
+            code: "did",
+            parentCode: "dpid",
+            uniqueId: "dId",
             url: prefix + "/list",
             createUrl: prefix + "/add/{id}",
             updateUrl: prefix + "/edit/{id}",

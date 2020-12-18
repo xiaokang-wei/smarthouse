@@ -2,6 +2,7 @@ package com.ruoyi.project.system.hr.emp.service;
 
 import com.ruoyi.project.system.hr.emp.domain.Emp;
 import com.ruoyi.project.system.hr.emp.vo.EmpVO;
+import com.ruoyi.project.system.user.domain.User;
 
 import java.util.List;
 
@@ -35,4 +36,6 @@ public interface IEmpService {
     int removeEmpById(String[] eIds);
 
     List<Emp> selectEmpByIds(String[] eIds);
+
+
 }

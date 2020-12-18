@@ -36,19 +36,22 @@
 <select id="selectEmpList" resultMap="EmpVOResult" parameterType="Emp" resultType="com.ruoyi.project.system.hr.emp.vo.EmpVO">
     <include refid="empVOSql">
     </include>
-    <if test="eName != null and eName != ''">
-        where e.e_name like concat('%', #{eName}, '%')
-    </if>
-    <if test="eStatus != null and eStatus != ''">
-        AND e.e_status = #{eStatus}
-    </if>
-    <if test="phone != null and phone != ''">
-        AND e.phone like concat('%', #{phone}, '%')
-    </if>
-    <if test="deptNo != null and deptNo != 0">
-        AND e.dept_no = #{deptNo}
-    </if>
+    <where>
+        <if test="eName != null and eName != ''">
+            e.e_name like concat('%', #{eName}, '%')
+        </if>
+        <if test="eStatus != null and eStatus != ''">
+            AND e.e_status = #{eStatus}
+        </if>
+        <if test="phone != null and phone != ''">
+            AND e.phone like concat('%', #{phone}, '%')
+        </if>
+        <if test="deptNo != null and deptNo != 0">
+            AND e.dept_no = #{deptNo}
+        </if>
+    </where>
 
+        order by emp_no
 </select>
 
     <update id="updateEmp" parameterType="com.ruoyi.project.system.hr.emp.domain.Emp" >
@@ -130,15 +133,15 @@
         delete from t_emp
         where e_id in
         <foreach collection="array" item="eId" separator="," open="(" close=")">
-            #{eId}
+              #{eId}
         </foreach>
     </delete>
 
     <select id="selectEmpByIds" resultMap="EmpResult" parameterType="string">
         select * from t_emp
-         where e_id in
-         <foreach collection="array" item="eId" separator="," open="(" close=")">
-             #{eId}
+        where e_id in
+        <foreach collection="array" item="eId" separator="," open="(" close=")">
+               #{eId}
          </foreach>
     </select>
 
