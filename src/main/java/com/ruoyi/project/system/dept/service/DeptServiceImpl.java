@@ -50,6 +50,7 @@ public class DeptServiceImpl implements IDeptService
     public List<Ztree> selectDeptTree(Dept dept)
     {
         List<Dept> deptList = deptMapper.selectDeptList(dept);
+        System.out.println("deptList = " + deptList);
         List<Ztree> ztrees = initZtree(deptList);
         return ztrees;
     }

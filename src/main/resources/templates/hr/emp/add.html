@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+	<th:block th:include="include :: header('新增雇员')" />
+	<th:block th:include="include :: select2-css" />
+</head>
+<body>
+    <div class="main-content">
+        <form id="form-user-add" class="form-horizontal">
+            <input name="deptNo" type="hidden" id="treeId"/>
+            <h4 class="form-header h4">基本信息</h4>
+            <div class="row">
+            	<div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label"><span style="color: #ff0000; ">*</span>雇员名称：</label>
+                        <div class="col-sm-8">
+                            <input name="eName" placeholder="请输入雇员名称" class="form-control" type="text" maxlength="30" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label"><span style="color: #ff0000; "></span><span style="color: red; ">*</span>归属部门：</label>
+                        <div class="col-sm-8">
+                            <div class="input-group">
+                            	<input name="deptName" onclick="selectDeptTree()" id="treeName" type="text" placeholder="请选择归属部门" class="form-control" required>
+                                <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label"><span style="color: #ff0000; ">*</span>手机号码：</label>
+                        <div class="col-sm-8">
+                            <input id="phone" name="phone" placeholder="请输入手机号码" class="form-control" type="text" maxlength="11" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label"><span style="color: red; ">*</span>岗位：</label>
+                        <div class="col-sm-8">
+                            <select id="post" class="form-control select2-multiple" multiple>
+                                <option th:each="post:${posts}" th:value="${post.post}" th:text="${post.post}" required></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">雇员性别：</label>
+                        <div class="col-sm-8">
+                            <select name="eSex" class="form-control m-b" th:with="type=${@dict.getType('sys_user_sex')}">
+				                <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+				            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">雇员状态：</label>
+                        <div class="col-sm-8">
+                            <label class="toggle-switch switch-solid">
+	                            <input type="checkbox" id="estatus" checked>
+	                            <span></span>
+	                        </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label class="col-xs-2 control-label">上级领导：</label>
+                            <div class="col-xs-4">
+                                <select id="mgr" class="form-control select2-multiple" multiple>
+                                    <option th:each="empVO:${empVOs}"  th:text="${empVO.mgr}" th:value="${empVO.empNo}" required></option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+        </form>
+    </div>
+      
+    <div class="row">
+        <div class="col-sm-offset-5 col-sm-10">
+            <button type="button" class="btn btn-sm btn-primary" onclick="submitHandler()"><i class="fa fa-check"></i>保 存</button>&nbsp;
+            <button type="button" class="btn btn-sm btn-danger" onclick="closeItem()"><i class="fa fa-reply-all"></i>关 闭 </button>
+        </div>
+    </div>
+	<th:block th:include="include :: footer" />
+	<th:block th:include="include :: select2-js" />
+	<script>
+	    var prefix = ctx + "hr/emp";
+
+        function submitHandler() {
+	        if ($.validate.form()) {
+	        	var data = $("#form-user-add").serializeArray();
+	        	var eStatus = $("input[id='eStatus']").is(':checked') == true ? 0 : 1;
+                var mgrs = $.form.selectSelects("mgr");
+                var posts = $.form.selectSelects("post");
+	        	var dIds = $.form.selectSelects("hrDept");
+	        	data.push({"name": "eStatus", "value": eStatus});
+	        	data.push({"name": "mgrNo", "value": mgrs});
+	        	data.push({"name": "post", "value": posts});
+	        	data.push({"name": "deptNo", "value": dIds});
+	        	$.operate.saveTab(prefix + "/add", data);
+	        }
+	    }
+         
+        /*雇员管理-新增-选择部门树*/
+        function selectDeptTree() {
+        	var treeId = $("#treeId").val();
+        	var dId = $.common.isEmpty(treeId) ? "100" : $("#treeId").val();
+        	var url = ctx + "hr/dept/selectDeptTree/" + dId;
+			var options = {
+				title: '选择部门',
+				width: "380",
+				url: url,
+				callBack: doSubmit
+			};
+			$.modal.openOptions(options);
+		}
+		
+		function doSubmit(index, layero){
+			var tree = layero.find("iframe")[0].contentWindow.$._tree;
+			if ($.tree.notAllowParents(tree)) {
+				var body = layer.getChildFrame('body', index);
+    			$("#treeId").val(body.find('#treeId').val());
+    			$("#treeName").val(body.find('#treeName').val());
+    			layer.close(index);
+			}
+		}
+
+		$(function() {
+            $('#hrDept').select2({
+                placeholder: "请选择部门",
+                allowClear: true
+            });
+            $('#mgr').select2({
+                placeholder: "请选择上级领导",
+                allowClear: true
+            });
+        })
+    </script>
+</body>
+</html>

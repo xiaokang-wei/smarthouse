@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('招聘信息修改')"/>
+    <th:block th:include="include :: select2-css" />
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-dept-edit" th:object="${recr}">
+        <input name="rId" type="hidden" th:field="*{rId}"/>
+        <input name="empNo" type="hidden" id="treeId"/>
+        <!--        <input id="treeId" name="parentId" type="hidden" th:field="*{dPid}" />-->
+
+            <div class="form-group">
+                <label class="col-sm-4 control-label ">招聘标题：</label>
+                <div class="col-sm-8">
+                    <div class="input-group">
+                        <input class="form-control" type="text" name="title" th:field="*{title}" id="title" required>
+                        <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <label class="col-sm-4 control-label"><span style="color: #ff0000; "></span><span
+                        style="color: red; ">*</span>申请人：</label>
+                <div class="col-sm-8">
+                    <div class="input-group">
+                        <input name="empNo" onclick="selectDeptTree()" id="treeName" type="text" placeholder="请选择申请人"
+                               th:field="*{applicant}" class="form-control" required>
+                        <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">审批状态：</label>
+                <div class="col-sm-8">
+                    <select id="approStatus" class="form-control select2-multiple" th:field="*{approStatus}" multiple required>
+                        <option  th:text="审批中" th:value="审批中"   ></option>
+                        <option  th:text="审批通过" th:value="审批通过"  ></option>
+                        <option  th:text="驳回" th:value="驳回"   ></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">招聘原因：</label>
+                <div class="col-sm-8">
+                    <input class="form-control" type="text" name="empNo" th:field="*{content}" id="content" required>
+                </div>
+            </div>
+
+    </form>
+</div>
+<div class="row">
+    <div class="col-sm-offset-5 col-sm-10">
+        <button type="button" class="btn btn-sm btn-primary" onclick="submitHandler()"><i class="fa fa-check"></i>保 存</button>&nbsp;
+        <button type="button" class="btn btn-sm btn-danger" onclick="closeItem()"><i class="fa fa-reply-all"></i>关 闭 </button>
+    </div>
+</div>
+<th:block th:include="include :: footer"/>
+<th:block th:include="include :: select2-js" />
+<script type="text/javascript">
+    var prefix = ctx + "hr/recr";
+
+
+    function submitHandler() {
+        if ($.validate.form()) {
+          var data = $('#form-dept-edit').serializeArray();
+            var approStatuss = $.form.selectSelects("approStatus");
+            data.push({"name": "#", "value": approStatuss});
+            $.operate.saveTab(prefix + "/edit", data);
+        }
+    }
+
+    /*部门管理-修改-选择部门树*/
+    function selectDeptTree() {
+        var treeId = $("#treeId").val();
+        var dId = 100;
+        var url = ctx + "knowledge/tree/selectDeptTree/" + dId;
+        var options = {
+            title: '选择申请人',
+            width: "380",
+            url: url,
+            callBack: doSubmit
+        };
+        $.modal.openOptions(options);
+    }
+
+    function doSubmit(index, layero) {
+        var tree = layero.find("iframe")[0].contentWindow.$._tree;
+        if ($.tree.notAllowParents(tree)) {
+            var body = layer.getChildFrame('body', index);
+            $("#treeId").val(body.find('#treeId').val());
+            $("#treeName").val(body.find('#treeName').val());
+            layer.close(index);
+        }
+    }
+
+    $(function() {
+        $('#approStatus').select2({
+            placeholder: "请选择申请人",
+            allowClear: true
+        });
+    })
+</script>
+</body>
+</html>
