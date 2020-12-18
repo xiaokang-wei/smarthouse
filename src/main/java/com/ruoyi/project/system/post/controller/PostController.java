@@ -21,6 +21,8 @@ import com.ruoyi.framework.web.page.TableDataInfo;
 import com.ruoyi.project.system.post.domain.Post;
 import com.ruoyi.project.system.post.service.IPostService;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * 岗位信息操作处理
  * 
