@@ -136,6 +136,7 @@ public class DeptController extends BaseController
     /**
      * 校验部门名称
      */
+
     @PostMapping("/checkDeptNameUnique")
     @ResponseBody
     public String checkDeptNameUnique(Dept dept)
@@ -161,6 +162,7 @@ public class DeptController extends BaseController
     public List<Ztree> treeData()
     {
         List<Ztree> ztrees = deptService.selectDeptTree(new Dept());
+        System.out.println("ztrees-contro = " + ztrees);
         return ztrees;
     }
 

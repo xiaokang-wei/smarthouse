@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+	<th:block th:include="include :: header('新增任务')" />
+	<th:block th:include="include :: datetimepicker-css" />
+</head>
+<body class="white-bg">
+	<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+		<form class="form-horizontal m" id="form-post-add">
+			<div class="form-group">
+				<label class="col-sm-3 control-label">任务标题：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" name="title" id="title" required>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label ">执行人：</label>
+				<div class="col-sm-8">
+					<div class="input-group">
+						<input type="hidden" id="treeId" name="experson.empNo">
+						<input class="form-control" type="text" onclick="selectEmpTree()" id="treeName" name="experson.eName" readonly="true" >
+						<span class="input-group-addon"><i class="fa fa-search"></i></span>
+					</div>
+				</div>
+			</div>
+			<div class="form-group" >
+				<label class="col-sm-3 control-label">开始时间：</label>
+				<div class="col-sm-8">
+					<div class="input-group date"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+						<input type="text" class="form-control date" value="2020-12-15" name="starttime">
+					</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">结束时间：</label>
+				<div class="col-sm-8">
+					<div class="input-group date"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+						<input type="text" class="form-control date" value="2020-12-15" name="endtime">
+					</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">紧急程度：</label>
+				<div class="col-sm-8">
+					<select class="form-control" name="priority">
+						<option>普通</option>
+						<option>紧急</option>
+						<option>非常紧急</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">任务内容：</label>
+				<div class="col-sm-8">
+					<textarea id="remark" name="t_content" class="form-control"></textarea>
+				</div>
+			</div>
+		</form>
+	</div>
+	<th:block th:include="include :: footer" />
+	<th:block th:include="include :: datetimepicker-js" />
+	<script type="text/javascript">
+		var prefix = ctx + "system/task";
+
+		$("#form-post-add").validate({
+			onkeyup: false,
+			rules:{
+				postName:{
+					remote: {
+		                url: ctx + "system/post/checkPostNameUnique",
+		                type: "post",
+		                dataType: "json",
+		                data: {
+		                	"postName" : function() {
+		                        return $.common.trim($("#postName").val());
+		                    }
+		                },
+		                dataFilter: function(data, type) {
+		                	return $.validate.unique(data);
+		                }
+		            }
+				},
+
+
+			},
+
+		});
+
+		function submitHandler() {
+	        if ($.validate.form()) {
+	        	$.operate.save(prefix + "/add", $('#form-post-add').serialize());
+	        }
+	    }
+		function selectEmpTree() {
+			var options = {
+				title: '执行人选择',
+				width: "380",
+				url: prefix + "/selectEmpTree/",
+				callBack: doSubmit
+			};
+			$.modal.openOptions(options);
+		}
+		function doSubmit(index, layero){
+			var body = layer.getChildFrame('body', index);
+			$("#treeId").val(body.find('#treeId').val());
+			$("#treeName").val(body.find('#treeName').val());
+			layer.close(index);
+		}
+		$(".input-group.date").datetimepicker({
+			format: "yyyy-mm-dd",
+			minView: "month",
+			autoclose: true
+		});
+	</script>
+
+
+
+</body>
+</html>

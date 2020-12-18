@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.knowledge.tree.mapper.TreeMapper">
+	<resultMap type="com.ruoyi.project.system.hr.emp.domain.Emp" id="EmpResult">
+		<id     property="eId"          column="e_id"         />
+		<result property="empNo"        column="emp_no"       />
+		<result property="eName"      column="e_name"     />
+		<result property="mgrNo"  column="mgr_no" />
+		<result property="deptNo"  column="dept_no" />
+	</resultMap>
+	<resultMap id="DeptResult" type="com.ruoyi.project.system.hr.dept.domain.HrDept">
+		<id     property="dId"          column="d_id"  />
+		<result property="deptName"      column="d_name" />
+		<result property="dPid"      column="d_pid" />
+
+	</resultMap>
+
+	<select id="selectDeptById" resultMap="DeptResult">
+		SELECT d_id, d_name,d_pid FROM t_dept WHERE d_id=#{deptId}
+	</select>
+
+	<select id="selectEmpList" resultMap="EmpResult">
+		SELECT * FROM t_emp
+	</select>
+
+	<select id="selectDIdByEmpNo" resultType="java.lang.Integer">
+		select dept_no from t_emp where emp_no=#{empNo}
+	</select>
+
+	<select id="selectDeptList" resultMap="DeptResult">
+		SELECT * FROM t_dept
+	</select>
+</mapper>
