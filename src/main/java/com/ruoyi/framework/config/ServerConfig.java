@@ -18,7 +18,7 @@ public class ServerConfig
      * 
      * @return 服务地址
      */
-    public String getUrl()
+    public static String getUrl()
     {
         HttpServletRequest request = ServletUtils.getRequest();
         return getDomain(request);

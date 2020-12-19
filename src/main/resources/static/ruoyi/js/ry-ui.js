@@ -925,7 +925,7 @@ var table = {
             },
             // 删除信息
             remove: function (id) {
-                alert(id)
+                // alert(id)
                 table.set();
                 $.modal.confirm("确定删除该条" + table.options.modalName + "信息吗？", function () {
                     var url = $.common.isEmpty(id) ? table.options.removeUrl : table.options.removeUrl.replace("{id}", id);

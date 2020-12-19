@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.knowledge.project.mapper.ProjectMapper">
+
+	<resultMap type="com.ruoyi.project.knowledge.project.domain.ProjectVO" id="ProjectVOResult">
+		<id     property="pId"          column="pj_id" />
+		<result property="pNo"          column="pj_no" />
+		<result property="pDesc"        column="pj_desc"/>
+		<result property="pStartTime"   column="pj_starttime"/>
+		<result property="pEndTime"     column="pj_endtime" />
+		<result property="pImg"         column="pj_img" />
+		<result property="mark"         column="mark" />
+		<result property="pName"        column="p_name" />
+		<result property="pNo"        column="p_number" />
+		<result property="pSrc"        column="pj_src" />
+	</resultMap>
+
+	
+	<sql id="selectProjectVo">
+        select pj_id, pj_no, pj_desc, pj_starttime,pj_endtime, pj_img, mark, p_name
+		from knowledge_project JOIN p_message on pj_no=p_number
+    </sql>
+
+	<select id="selectProjectVOList" resultMap="ProjectVOResult">
+		<include refid="selectProjectVo"/>
+		<where>
+			<if test="pName != null and pName != ''">
+				AND p_name like concat('%', #{pName}, '%')
+			</if>
+			<if test="mark != null and mark != ''">
+				AND mark = #{mark}
+			</if>
+			<if test="pStartTime != null">
+				AND pj_starttime > #{pStartTime}
+			</if>
+			<if test="pEndTime != null">
+				AND  #{pEndTime} > pj_endtime
+			</if>
+		</where>
+	</select>
+
+	<select id="selectProjectList" resultMap="ProjectVOResult">
+		SELECT p_number ,p_name FROM p_message
+	</select>
+
+	<insert id="insertProject" parameterType="com.ruoyi.project.knowledge.project.domain.Project">
+        insert into knowledge_project (
+		<trim suffixOverrides=",">
+			<if test="pNo != null and pNo != '0'">pj_no,</if>
+			<if test="pStartTime != null">pj_starttime,</if>
+			<if test="pEndTime != null">pj_endtime,</if>
+			<if test="pDesc != null and pDesc != ''">pj_desc,</if>
+			<if test="mark != null and mark != ''">mark,</if>
+			<if test="pImg != null and pImg != ''">pj_img,</if>
+			<if test="pSrc != null and pSrc != ''">pj_src,</if>
+		</trim>
+		)values(
+		<trim suffixOverrides=",">
+		<if test="pNo != null and pNo != ''">#{pNo},</if>
+		<if test="pStartTime != null">#{pStartTime},</if>
+		<if test="pEndTime != null">#{pEndTime},</if>
+		<if test="pDesc != null and pDesc != ''">#{pDesc},</if>
+		<if test="mark != null and mark != ''">#{mark},</if>
+		<if test="pImg != null and pImg != ''">#{pImg},</if>
+			<if test="pSrc != null and pSrc != ''">#{pSrc},</if>
+		</trim>
+		)
+	</insert>
+
+	<update id="changeMark" parameterType="com.ruoyi.project.knowledge.project.domain.Project">
+		 update  knowledge_project set  mark=#{mark} where pj_id=#{pId}
+	</update>
+
+	<delete id="deleteProjectById" >
+		delete from knowledge_project where pj_id in
+		<foreach collection="array" open="(" close=")" separator="," item="pId">#{pId}</foreach>
+	</delete>
+
+	<select id="selectSrcById" resultType="java.lang.String">
+		select pj_src FROM knowledge_project WHERE pj_no=#{pNo}
+	</select>
+</mapper>

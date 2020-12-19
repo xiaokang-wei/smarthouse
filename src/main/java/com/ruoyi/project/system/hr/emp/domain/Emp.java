@@ -9,14 +9,23 @@ import com.ruoyi.framework.web.domain.BaseEntity;
  * 今天写完十万个Bug了吗？
  */
 public class Emp extends BaseEntity {
+    @Excel(name = "序列号")
     private Integer eId;
+    @Excel(name = "雇员编号")
     private Integer empNo;
+    @Excel(name = "雇员名称")
     private String eName;
+    @Excel(name = "雇员性别")
     private String eSex;
+    @Excel(name = "上级编号")
     private Integer mgrNo;
+    @Excel(name = "岗位")
     private String post;
+    @Excel(name = "手机号码")
     private String phone;
+    @Excel(name = "部门编号")
     private Integer deptNo;
+    @Excel(name = "状态")
     private String eStatus;
 
     public Emp() {

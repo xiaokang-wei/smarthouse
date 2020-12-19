@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.system.returntask.mapper.ReturnTaskMapper">
+    <resultMap type="com.ruoyi.project.system.returntask.domain.ReturnTask" id="map">
+        <id     property="tid"        column="tid"       />
+        <result property="title" column="title"/>
+        <result property="t_content"      column="t_content"     />
+        <result property="starttime"      column="starttime"     />
+        <result property="endtime"      column="endtime"     />
+        <result property="priority"        column="priority"        />
+        <result property="exstatus"      column="exstatus"     />
+        <result property="creatby"    column="creatby"   />
+        <result property="creattime"    column="creattime"   />
+        <result property="experson" column="e_name"/>
+        <result property="examine" column="examine"/>
+        <result property="returnContent" column="return_content"/>
+        <result property="reviewer" column="reviewer"/>
+    </resultMap>
+    <select id="list" resultMap="map">
+        select * from t_task t join t_emp e on t.experson=e.emp_no where t.reviewer=#{name} and t.examine=2
+    </select>
+
+    <update id="editSave">
+        update t_task
+        <set>
+            <if test="title != null and title != ''"> title=#{title},</if>
+            <if test="t_content != null and t_content != ''"> t_content=#{t_content} ,</if>
+            <if test="starttime != null "> starttime=#{starttime},</if>
+            <if test="endtime != null "> endtime=#{endtime},</if>
+            <if test="priority != null and priority != ''"> priority=#{priority},</if>
+            <if test="experson!= null and experson!=''"> experson=#{experson},</if>
+            <if test="exstatus != null and exstatus != ''"> exstatus=#{exstatus},</if>
+            reviewer='',return_content='',examine=0
+        </set>
+        where tid = #{tid}
+    </update>
+</mapper>

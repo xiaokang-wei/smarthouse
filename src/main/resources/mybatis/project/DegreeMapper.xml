@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.project.degree.mapper.DegreeMapper">
+
+
+	<resultMap type="com.ruoyi.project.project.degree.domain.Degree" id="DegreeResult">
+		<id     property="pid"        column="p_id"       />
+		<result property="ename"      column="e_name"     />
+		<result property="pname"      column="p_name"     />
+		<result property="ptype"      column="p_type"     />
+		<result property="ptask"        column="p_task"        />
+		<result property="pdegree"        column="p_degree"        />
+		<result property="pstarttime"      column="p_starttime"     />
+		<result property="pendtime"      column="p_endtime"     />
+	</resultMap>
+
+	<!--	<sql id="selectMessageVo">-->
+	<!--        select pid, pname, type, cname, pstatus, createby, createtime-->
+	<!--		from t_project-->
+	<!--    </sql>-->
+
+
+	<select id="selectDegreeAll" resultMap="DegreeResult">
+		select p.p_id,e.e_name,p.p_name,p.p_type,p_task,p.p_degree,p.p_starttime,p.p_endtime
+			from t_projectmanager p join t_emp e on e.e_id=p.p_id
+	 </select>
+
+
+</mapper> 

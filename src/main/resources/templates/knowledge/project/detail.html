@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="/js/jquery.min.js"></script>
+</head>
+<body>
+我是detail
+[[${url}]]
+<input type="hidden" value="" id="src" th:value="${url}">
+<div id="fd"></div>
+<script>
+    $(function(){
+        console.log("111111")
+        var url = $("#src").val();
+        var fs = require('fs');
+        console.log(url)
+
+
+        let components = []
+        const files = fs.readdirSync(url)
+
+        files.forEach(function (item, index) {
+            let stat = fs.statSync(url+"/"+ item)
+            if (stat.isDirectory() === true) {
+                $("#fd").html("<div style='width: 150px;height: 200px'><img src='/img/Developer.png' style='width: 100px;height: 100px'><div>"+item+"</div></div>")
+            }else{
+                var docExt = new Array(".doc",".docx");//word文件的后缀名
+                var xlsExt = new Array(".xls",".xlsx");//excel文件的后缀名
+                if(typeMatch(docExt, item)){
+                    $("#fd").html("<div style='width: 150px;height: 200px'><img src='/img/Developer.png' style='width: 100px;height: 100px'><div>"+item+"</div></div>")
+                }
+                else if (typeMatch(xlsExt, item)){
+                    $("#fd").html("<div style='width: 150px;height: 200px'><img src='/img/Developer.png' style='width: 100px;height: 100px'><div>"+item+"</div></div>")
+                }
+            }
+        })
+        function aaa(){
+            console.log("111111")
+            var url = $("#src").val();
+            console.log(url)
+            let components = []
+            const files = fs.readdirSync(url)
+            files.forEach(function (item, index) {
+                let stat = fs.statSync(url+"/"+ item)
+                if (stat.isDirectory() === true) {
+                    $("#fd").html("<div style='width: 150px;height: 200px'><img src='/img/Developer.png' style='width: 100px;height: 100px'><div>"+item+"</div></div>")
+                }else{
+                    var docExt = new Array(".doc",".docx");//word文件的后缀名
+                    var xlsExt = new Array(".xls",".xlsx");//excel文件的后缀名
+                    if(typeMatch(docExt, item)){
+                        $("#fd").html("<div style='width: 150px;height: 200px'><img src='/img/Developer.png' style='width: 100px;height: 100px'><div>"+item+"</div></div>")
+                    }
+                    else if (typeMatch(xlsExt, item)){
+                        $("#fd").html("<div style='width: 150px;height: 200px'><img src='/img/Developer.png' style='width: 100px;height: 100px'><div>"+item+"</div></div>")
+                    }
+                }
+            })
+        }
+
+
+        //获取文件名后缀名
+        String.prototype.extension = function(){
+            var ext = null;
+            var name = this.toLowerCase();
+            var i = name.lastIndexOf(".");
+            if(i > -1){
+                var ext = name.substring(i);
+            }
+            return ext;
+        }
+        //判断Array中是否包含某个值
+        Array.prototype.contain = function(obj){
+            for(var i=0; i<this.length; i++){
+                if(this[i] === obj)
+                    return true;
+            }
+            return false;
+        };
+        function typeMatch(type, fielname){
+            var ext = filename.extension();
+            if(type.contain(ext)){
+                return true;
+            }
+            return false;
+        }
+    });
+
+</script>
+</body>
+</html>
