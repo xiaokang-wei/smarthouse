@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.product.view.mapper.ViewMapper">
+
+	<resultMap type="com.ruoyi.project.product.view.domain.ProView" id="ManageResult">
+		<id     property="pdId"        column="pdid"       />
+		<result property="pdType"      column="pdtype"     />
+		<result property="pdName"      column="pdname"     />
+		<result property="pdImg"      column="pdImg"     />
+		<result property="pdSeries"        column="pdseries"        />
+		<result property="pdStyle"      column="pdstyle"     />
+		<result property="pdPecs"    column="pdpecs"   />
+		<result property="pdMaterials"      column="pdmaterials"     />
+		<result property="pdPlace"      column="pdplace"     />
+		<result property="pdPrice"      column="pdprice"     />
+		<result property="pdNum"      column="pdnum"     />
+		<result property="pdTotal"      column="pdtotal"     />
+
+	</resultMap>
+
+	<sql id="selectSeriesVo">
+        select pdid, pdtype,pdname,pdimg,pdseries,pdstyle,pdpecs,pdmaterials
+		from t_product
+    </sql>
+
+	<select id="selectSeriesList" parameterType="com.ruoyi.project.product.view.domain.ProView" resultMap="ManageResult">
+		<include refid="selectSeriesVo"/>
+		<where>
+			<if test="pdId != null and pdId != ''">
+				AND pdid like concat('%', #{pdId}, '%')
+			</if>
+			<if test="pdType != null and pdType != ''">
+				AND pdtype like concat('%', #{pdType}, '%')
+			</if>
+			<if test="pdName != null and pdName != ''">
+				AND pdname = #{pdName}
+			</if>
+			<if test="pdImg != null and pdImg != ''">
+				AND pdimg like concat('%', #{pdImg}, '%')
+			</if>
+			<if test="pdSeries != null and pdSeries != ''">
+				AND pdseries like concat('%', #{pdSeries}, '%')
+			</if>
+			<if test="pdStyle != null and pdStyle != ''">
+				AND pdstyle like concat('%', #{pdStyle}, '%')
+			</if>
+			<if test="pdPecs != null and pdPecs != ''">
+				AND pdpecs like concat('%', #{pdPecs}, '%')
+			</if>
+			<if test="pdMaterials != null and pdMaterials != ''">
+				AND pdmaterials like concat('%', #{pdMaterials}, '%')
+			</if>
+		</where>
+	</select>
+
+
+	<select id="selectDetailById" resultMap="ManageResult">
+		 select pdid, pdtype,pdname,pdImg,pdseries,pdstyle,pdpecs,pdmaterials,pdplace,pdprice,pdnum,pdtotal
+		from t_product where pdid=#{pdId}
+    </select>
+
+
+</mapper> 

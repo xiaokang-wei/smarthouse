@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.product.manage.mapper.ManageMapper">
+
+	<resultMap type="com.ruoyi.project.product.manage.domain.ProManage" id="ManageResult">
+		<id     property="pdId"        column="pdid"       />
+		<result property="pdType"      column="pdtype"     />
+		<result property="pdName"      column="pdname"     />
+		<result property="pdImg"      column="pdImg"     />
+		<result property="pdSeries"        column="pdseries"        />
+		<result property="pdStyle"      column="pdstyle"     />
+		<result property="pdPecs"    column="pdpecs"   />
+		<result property="pdMaterials"      column="pdmaterials"     />
+		<result property="pdPlace"      column="pdplace"     />
+		<result property="pdPrice"      column="pdprice"     />
+		<result property="pdNum"      column="pdnum"     />
+		<result property="pdTotal"      column="pdtotal"     />
+	</resultMap>
+
+	<sql id="selectSeriesVo">
+        select pdid, pdtype,pdname,pdimg,pdseries,pdstyle,pdpecs,pdmaterials
+		from t_product
+    </sql>
+
+	<select id="selectSeriesList" parameterType="com.ruoyi.project.product.pecs.domain.ProPecs" resultMap="ManageResult">
+		<include refid="selectSeriesVo"/>
+		<where>
+			<if test="pdId != null and pdId != ''">
+				AND pdid like concat('%', #{pdId}, '%')
+			</if>
+			<if test="pdType != null and pdType != ''">
+				AND pdtype like concat('%', #{pdType}, '%')
+			</if>
+			<if test="pdName != null and pdName != ''">
+				AND pdname = #{pdName}
+			</if>
+			<if test="pdImg != null and pdImg != ''">
+				AND pdimg like concat('%', #{pdImg}, '%')
+			</if>
+			<if test="pdSeries != null and pdSeries != ''">
+				AND pdseries like concat('%', #{pdSeries}, '%')
+			</if>
+			<if test="pdStyle != null and pdStyle != ''">
+				AND pdstyle like concat('%', #{pdStyle}, '%')
+			</if>
+			<if test="pdPecs != null and pdPecs != ''">
+				AND pdpecs like concat('%', #{pdPecs}, '%')
+			</if>
+			<if test="pdMaterials != null and pdMaterials != ''">
+				AND pdmaterials like concat('%', #{pdMaterials}, '%')
+			</if>
+		</where>
+	</select>
+
+	<select id="selectSeriesAll" resultMap="ManageResult">
+		<include refid="selectSeriesVo"/>
+	</select>
+	<delete id="deleteSeriesByIds" parameterType="Long">
+		delete from t_product where pdid in
+		<foreach collection="array" item="pdId" open="(" separator="," close=")">
+			#{pdId}
+		</foreach>
+	</delete>
+
+	<select id="selectSeriesById"  resultMap="ManageResult" parameterType="int">
+		<include refid="selectSeriesVo"/>
+		where pdid = #{pdId}
+	</select>
+
+	<insert id="insertSeries" parameterType="com.ruoyi.project.product.manage.domain.ProManage" useGeneratedKeys="true" keyProperty="pdId">
+		insert into  t_product
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="pdId != null and pdId != 0">pdid,</if>
+			<if test="pdType != null and pdType != ''">pdtype,</if>
+			<if test="pdName != null and pdName != ''">pdname,</if>
+			<if test="pdImg != null and pdImg != ''">pdImg,</if>
+			<if test="pdSeries != null and pdSeries != ''">pdseries,</if>
+			<if test="pdStyle != null and pdStyle != ''">pdstyle,</if>
+			<if test="pdPecs != null and pdPecs != ''">pdpecs,</if>
+			<if test="pdMaterials != null and pdMaterials != ''">pdmaterials,</if>
+			<if test="pdPlace != null and pdPlace != ''">pdplace,</if>
+			<if test="pdPrice != null and pdPrice != ''">pdprice,</if>
+			<if test="pdNum != null and pdNum != ''">pdnum,</if>
+			<if test="pdTotal != null and pdTotal != ''">pdtotal,</if>
+		</trim>
+		values
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="pdId != null and pdId != 0">default ,</if>
+			<if test="pdType != null and pdType != ''">#{pdType},</if>
+			<if test="pdName != null and pdName != ''">#{pdName},</if>
+			<if test="pdImg  != null and pdImg != ''">#{pdImg},</if>
+			<if test="pdSeries != null and pdSeries != ''">#{pdSeries},</if>
+			<if test="pdStyle != null and pdStyle != ''">#{pdStyle},</if>
+			<if test="pdPecs != null and pdPecs != ''">#{pdPecs},</if>
+			<if test="pdMaterials != null and pdMaterials != ''">#{pdMaterials},</if>
+			<if test="pdPlace != null and pdPlace != ''">#{pdPlace},</if>
+			<if test="pdPrice != null and pdPrice != ''">#{pdPrice},</if>
+			<if test="pdNum != null and pdNum != ''">#{pdNum},</if>
+			<if test="pdTotal != null and pdTotal != ''">#{pdTotal},</if>
+		</trim>
+	</insert>
+
+	<select id="checkSeriesNameUnique" parameterType="String" resultMap="ManageResult">
+		<include refid="selectSeriesVo"/>
+		where pdname=#{pdName}
+	</select>
+
+	<update id="updateSeries">
+		update t_product
+		<set>
+			<if test="pdType != null and pdType != ''">pdtype=#{pdType},</if>
+			<if test="pdName != null and pdName != ''">pdname=#{pdName},</if>
+			<if test="pdImg != null and pdImg != ''">pdimg=#{pdImg},</if>
+			<if test="pdSeries != null and pdSeries != ''">pdseries=#{pdSeries},</if>
+			<if test="pdStyle != null and pdStyle != ''">pdstyle=#{pdStyle},</if>
+			<if test="pdPecs != null and pdPecs != ''">pdpecs=#{pdPecs},</if>
+			<if test="pdMaterials != null and pdMaterials != ''">pdmaterials=#{pdMaterials},</if>
+			<if test="pdPlace != null and pdPlace != ''">pdplace=#{pdPlace},</if>
+			<if test="pdPrice != null and pdPrice != ''">pdprice=#{pdPrice},</if>
+			<if test="pdNum != null and pdNum != ''">pdnum=#{pdNum},</if>
+			<if test="pdTotal != null and pdTotal != ''">pdtotal=#{pdTotal},</if>
+		</set>
+		where pdid = #{pdId}
+	</update>
+
+	<select id="selectDetailById" resultMap="ManageResult">
+		 select pdid, pdtype,pdname,pdImg,pdseries,pdstyle,pdpecs,pdmaterials,pdplace,pdprice,pdnum,pdtotal
+		from t_product where pdid=#{pdId}
+    </select>
+</mapper>
