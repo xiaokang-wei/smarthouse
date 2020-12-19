@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.system.calendar.mapper.CalendarMapper">
+    <resultMap id="map" type="com.ruoyi.project.system.calendar.domain.Calendar">
+        <result property="date" column="starttime"/>
+        <result property="content" column="t_content"/>
+    </resultMap>
+    <select id="selectCalendar" resultMap="map">
+        select starttime,t_content from t_task t join t_emp e on t.experson=e.emp_no where t.experson=#{uid} and t.examine=1 and exstatus!='已完成'
+    </select>
+</mapper>

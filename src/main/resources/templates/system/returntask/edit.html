@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('修改任务')" />
+    <th:block th:include="include :: datetimepicker-css" />
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-post-edit" th:object="${task}">
+<!--    <form class="form-horizontal m" id="form-post-edit" >-->
+        <div class="form-group">
+            <label class="col-sm-3 control-label">任务标题：</label>
+            <div class="col-sm-8">
+                <input class="form-control" type="text" name="title" id="title" th:field="*{title}">
+                <input type="hidden" th:value="*{tid}"  name="tid">
+<!--                <input class="form-control" type="text" name="title" id="title" >-->
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">执行人：</label>
+            <div class="col-sm-8">
+                <div class="input-group">
+                    <input type="hidden" id="treeId" name="experson" th:value="${task.experson.empNo}">
+<!--                    <input type="hidden" id="treeId" name="experson.empNo">-->
+                    <input class="form-control" type="text" onclick="selectEmpTree()" id="treeName" name="experson.eName" readonly="true" th:field="*{experson.eName}" >
+<!--                    <input class="form-control" type="text" onclick="selectEmpTree()" id="treeName" name="experson.eName" readonly="true"  >-->
+                    <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                </div>
+            </div>
+        </div>
+        <div class="form-group" >
+            <label class="col-sm-3 control-label">开始时间：</label>
+            <div class="col-sm-8">
+                <div class="input-group date"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    <input type="text" class="form-control date" name="starttime" th:value="${starttime}">
+<!--                    <input type="text" class="form-control date" value="2020-12-15" name="starttime" >-->
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">结束时间：</label>
+            <div class="col-sm-8">
+                <div class="input-group date"> <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    <input type="text" class="form-control date"  name="endtime"  th:value="${endtime}"}>
+<!--                    <input type="text" class="form-control date" value="2020-12-15" name="endtime">-->
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">紧急程度：</label>
+                <div class="col-sm-8">
+                    <select id="post" name="priority" class="form-control select2-multiple" multiple>
+                        <option th:each="select:${selecteds}" th:value="${select.priority}" th:text="${select.priority}" th:selected="${select.flag}" ></option>
+                    </select>
+                </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">任务内容：</label>
+            <div class="col-sm-8">
+                <textarea id="remark" name="t_content" class="form-control" th:field="*{t_content}"></textarea>
+<!--                <textarea id="remark" name="t_content" class="form-control"></textarea>-->
+            </div>
+        </div>
+    </form>
+</div>
+<th:block th:include="include :: footer" />
+<th:block th:include="include :: datetimepicker-js" />
+<script type="text/javascript">
+    var prefix = ctx + "system/returntask";
+
+    $("#form-post-edit").validate({
+        onkeyup: false,
+        rules:{
+            postName:{
+                remote: {
+                    url: ctx + "system/post/checkPostNameUnique",
+                    type: "post",
+                    dataType: "json",
+                    data: {
+                        "postId": function() {
+                            return $("input[name='postId']").val();
+                        },
+                        "postName" : function() {
+                            return $.common.trim($("#postName").val());
+                        }
+                    },
+                    dataFilter: function(data, type) {
+                        return $.validate.unique(data);
+                    }
+                }
+            },
+        },
+        messages: {
+            "postCode": {
+                remote: "岗位编码已经存在"
+            },
+            "postName": {
+                remote: "岗位名称已经存在"
+            }
+        },
+        focusCleanup: true
+    });
+
+    function submitHandler() {
+        if ($.validate.form()) {
+            $.operate.save(prefix + "/edit", $('#form-post-edit').serialize());
+        }
+    }
+    function selectEmpTree() {
+        var options = {
+            title: '执行人选择',
+            width: "380",
+            url: "/knowledge/tree" + "/selectDeptTree/100",
+            callBack: doSubmit
+        };
+        $.modal.openOptions(options);
+    }
+    function doSubmit(index, layero){
+        var body = layer.getChildFrame('body', index);
+        $("#treeId").val(body.find('#treeId').val());
+        $("#treeName").val(body.find('#treeName').val());
+        layer.close(index);
+    }
+    $(".input-group.date").datetimepicker({
+        format: "yyyy-mm-dd",
+        minView: "month",
+        autoclose: true
+    });
+</script>
+</body>
+</html>

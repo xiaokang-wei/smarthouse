@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.system.taskapproval.mapper.TaskApprovalMapper">
+    <!--    private Integer tid;
+        //任务标题
+        private String title;
+        //执行雇员名称
+        private String experson;
+    //任务内容
+    private String t_content;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date starttime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date endtime;
+    //紧急程度
+    private  String priority;
+    //任务状态
+    private String exstatus;
+    //创建者
+    private String creatby;
+    //创建时间
+    private Date creattime;
+    //审批状态
+    private Integer examine;
+    //审批人
+    private String reviewer;
+
+         private Integer eId;
+        private Integer empNo;
+        private String eName;
+        private String eSex;
+        private Integer mgrNo;
+        private String post;
+        private String phone;
+        private Integer deptNo;
+        private String eStatus;
+    -->
+
+    <resultMap type="com.ruoyi.project.system.taskapproval.domain.TaskApproval" id="taskapprovalResult">
+        <id     property="tid"        column="tid"       />
+        <result property="title" column="title"/>
+        <result property="t_content"      column="t_content"     />
+        <result property="starttime"      column="starttime"     />
+        <result property="endtime"      column="endtime"     />
+        <result property="priority"        column="priority"        />
+        <result property="exstatus"      column="exstatus"     />
+        <result property="creatby"    column="creatby"   />
+        <result property="creattime"    column="creattime"   />
+        <result property="experson" column="e_name"/>
+        <result property="examine" column="examine"/>
+        <result property="reviewer" column="reviewer"/>
+    </resultMap>
+    <resultMap type="com.ruoyi.project.system.task.domain.ExcelTask" id="Excel">
+        <id     property="tid"        column="tid"       />
+        <result property="title" column="title"/>
+        <result property="t_content"      column="t_content"     />
+        <result property="starttime"      column="starttime"     />
+        <result property="endtime"      column="endtime"     />
+        <result property="priority"        column="priority"        />
+        <result property="exstatus"      column="exstatus"     />
+        <result property="creatby"    column="creatby"   />
+        <result property="creattime"    column="creattime"   />
+        <result property="experson" column="e_name"/>
+
+    </resultMap>
+
+    <sql id="selectTaskVo">
+        select tid, experson, t_content, starttime, endtime, priority, exstatus, creatby,creattime,examine,Reviewer
+		from t_task
+    </sql>
+
+    <select id="selectTaskApprovalList" parameterType="com.ruoyi.project.system.taskapproval.domain.TaskApproval" resultMap="taskapprovalResult">
+        select t.tid,t.title, t.experson, t.t_content, t.starttime, t.endtime, t.priority, t.exstatus, t.creatby,t.creattime,t.examine,t.reviewer,e.e_name,e.mgr_no
+        from t_task t
+        join t_emp e on t.experson=e.emp_no
+        <where>
+            mgr_no=#{userId}
+            <if test="taskApproval.title != null and taskApproval.title != ''">
+                AND t.title =#{taskApproval.title}
+            </if>
+            <if test="taskApproval.exstatus != null and taskApproval.exstatus != ''">
+                AND t.exstatus = #{taskApproval.exstatus}
+            </if>
+            <if test="taskApproval.priority != null and taskApproval.priority != ''">
+                AND t.priority = #{taskApproval.priority}
+            </if>
+            <if test="taskApproval.experson != null and taskApproval.experson != ''">
+                    AND e.e_name like concat('%', #{taskApproval.experson}, '%')
+            </if>
+            <if test="taskApproval.examine!=null">
+                AND t.examine = #{taskApproval.examine}
+            </if>
+
+        </where>
+    </select>
+
+    <select id="selectTaskApprovalByTid" resultMap="taskapprovalResult">
+        select t.tid,t.title, t.experson, t.t_content, t.starttime, t.endtime, t.priority, t.exstatus, t.creatby,t.creattime,t.examine,t.reviewer,e.e_name,e.mgr_no
+        from t_task t
+        join t_emp e on t.experson=e.emp_no
+        where tid=#{tid}
+    </select>
+    <update id="editSave" parameterType="com.ruoyi.project.system.taskapproval.domain.TaskApproval">
+        update t_task set examine=#{examine},reviewer=#{reviewer}
+         <if test="returnContent!=null and returnContent!=''">
+             ,return_content=#{returnContent}
+         </if>
+         where tid=#{tid}
+    </update>
+
+    <select id="selectScheduleList" resultMap="taskapprovalResult">
+        select t.tid,t.title, t.experson, t.t_content, t.starttime, t.endtime, t.priority, t.exstatus, t.creatby,t.creattime,t.examine,t.reviewer,e.e_name,e.mgr_no
+        from t_task t
+        join t_emp e on t.experson=e.emp_no
+        <where>
+            experson=#{userId} and examine=1
+            <if test="taskApproval.title != null and taskApproval.title != ''">
+                AND t.title =#{taskApproval.title}
+            </if>
+            <if test="taskApproval.exstatus != null and taskApproval.exstatus != ''">
+                AND t.exstatus = #{taskApproval.exstatus}
+            </if>
+            <if test="taskApproval.priority != null and taskApproval.priority != ''">
+                AND t.priority = #{taskApproval.priority}
+            </if>
+            <if test="taskApproval.experson != null and taskApproval.experson != ''">
+                AND e.e_name like concat('%', #{taskApproval.experson}, '%')
+            </if>
+            <if test="taskApproval.examine!=null">
+                AND t.examine = #{taskApproval.examine}
+            </if>
+        </where>
+    </select>
+
+    <update id="editSave1" parameterType="com.ruoyi.project.system.taskapproval.domain.TaskApproval">
+        update t_task set exstatus=#{exstatus} where tid=#{tid}
+    </update>
+</mapper>
