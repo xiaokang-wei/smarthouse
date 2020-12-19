@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+	<th:block th:include="include :: header('产品详细')" />
+	<th:block th:include="include :: jsonview-css" />
+</head>
+<body class="white-bg">
+
+	<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+		<div class="btn-group-sm" id="toolbar" role="group">
+			<a class="btn btn-success" onclick="$.modal.reload()">
+				<i class="glyphicon glyphicon-share-alt"></i> 返回
+			</a>
+		</div>
+	<form class="form-horizontal m-t" id="signupForm">
+		<div class="form-group">
+			<label class="col-sm-2 control-label">编号：</label>
+			<div class="form-control-static" th:text="${proView.pdId}">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-2 control-label">型号：</label>
+			<div class="form-control-static" th:text="${proView.pdName}">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-2 control-label">品名：</label>
+			<div class="form-control-static" th:text="${proView.pdName}">
+			</div>
+		</div>
+		<div class="form-group" style="position: relative">
+			<div class="col-sm-8" style="position: absolute;right: 0">
+				<a id="url"><img th:src="*{proView.pdImg}" style="width: 350px;height: 350px;"></a>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-2 control-label">系列：</label>
+			<div class="form-control-static" th:text="${proView.pdSeries}">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-2 control-label">风格：</label>
+			<div class="form-control-static" th:text="${proView.pdStyle}">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-2 control-label">规格：</label>
+			<div class="form-control-static" th:text="${proView.pdPecs}">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-2 control-label">材质：</label>
+			<div class="form-control-static" th:text="${proView.pdMaterials}">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-2 control-label">产地：</label>
+			<div class="form-control-static" th:text="${proView.pdPlace}">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-2 control-label">单价：</label>
+			<div class="form-control-static" th:text="${proView.pdPrice}">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-2 control-label">数量：</label>
+			<div class="form-control-static" th:text="${proView.pdNum}">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-2 control-label">总价：</label>
+			<div class="form-control-static" th:text="${proView.pdTotal}">
+			</div>
+		</div>
+	</form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: jsonview-js" />
+    <script th:inline="javascript">
+	    $(function() {
+	    	var operParam = [[${proView.operParam}]];
+	    	if ($.common.isNotEmpty(operParam) && operParam.length < 2000) {
+	    		$("#operParam").JSONView(operParam);
+	    	} else {
+	    		$("#operParam").text(operParam);
+	    	}
+	    	var jsonResult = [[${operLog.jsonResult}]];
+	    	if ($.common.isNotEmpty(jsonResult) && jsonResult.length < 2000) {
+	    		$("#jsonResult").JSONView(jsonResult);
+	    	} else {
+	    		$("#jsonResult").text(jsonResult);
+	    	}
+	    });
+    </script>
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+	<th:block th:include="include :: header('修改产品')" />
+</head>
+<body class="white-bg">
+	<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+		<form class="form-horizontal m" id="form-manage-edit" th:object="${ProManage}">
+			<input id="pdId" name="pdId" type="hidden" th:field="*{pdId}"/>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">型号：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" name="pdType" id="pdType" th:field="*{pdType}" required>
+				</div>
+				<label class="col-sm-3 control-label">品名：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" name="pdName" id="pdName" th:field="*{pdName}" required>
+				</div>
+				<label class="col-sm-3 control-label">图片：</label>
+				<div class="col-sm-8">
+					<input name="pdImg" id="pic" class="form-control" type="hidden">
+					<a id="url"><img th:src="*{pdImg}" style="width: 90px;height: 90px"></a>
+					<input type="file" id="pdImg">
+
+				</div>
+				<label class="col-sm-3 control-label">系列：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" name="pdSeries" id="pdSeries" th:field="*{pdSeries}" required>
+				</div>
+				<label class="col-sm-3 control-label">风格：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" name="pdStyle" id="pdStyle" th:field="*{pdStyle}" required>
+				</div>
+				<label class="col-sm-3 control-label">规格：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" name="pdPecs" id="pdPecs" th:field="*{pdPecs}" required>
+				</div>
+				<label class="col-sm-3 control-label">材质：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" name="pdMaterials" id="pdMaterials" th:field="*{pdMaterials}" required>
+				</div>
+				<label class="col-sm-3 control-label">产地：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" name="pdPlace" id="pdPlace" th:field="*{pdPlace}">
+				</div>
+				<label class="col-sm-3 control-label">单价：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" name="pdPrice" id="pdPrice" th:field="*{pdPrice}">
+				</div>
+				<label class="col-sm-3 control-label">数量：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" name="pdNum" id="pdNum" th:field="*{pdNum}" >
+				</div>
+				<label class="col-sm-3 control-label">总价：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" name="pdTotal" id="pdTotal" th:field="*{pdTotal}">
+				</div>
+			</div>
+		</form>
+	</div>
+	<th:block th:include="include :: footer" />
+	<script type="text/javascript">
+		var prefix = ctx + "product/manage";
+		
+		$("#form-manage-edit").validate({
+			onkeyup: false,
+			rules:{
+				pdName:{
+					remote: {
+						url: ctx + "product/manage/checkSeriesNameUnique",
+						type: "post",
+						dataType: "json",
+						data: {
+								"pdId" : function () {
+									return $.common.trim($("#pdId").val())
+								},
+							"pdName" : function() {
+								return $.common.trim($("#pdName").val());
+							}
+						},
+						dataFilter: function(data, type) {
+							return $.validate.unique(data);
+						}
+					}
+				},
+			},
+			messages: {
+				"pdName": {
+					remote: "产品已经存在"
+				}
+			},
+			focusCleanup: true
+		});
+		
+		function submitHandler() {
+	        if ($.validate.form()) {
+	        	$.operate.save(prefix + "/edit", $('#form-manage-edit').serialize());
+	        }
+	    }
+
+		$("#pdImg").change(function () {
+			var data = new FormData();
+			data.append("file", $("#pdImg")[0].files[0]);
+			$.ajax({
+				type: "post",
+				url: ctx + "product/manage/upload",
+				data: data,
+				cache: false,
+				contentType: false,
+				processData: false,
+				dataType: 'json',
+				success: function(result) {
+					// alert(JSON.stringify(result))
+					if (result.code == web_status.SUCCESS) {
+						$("#url img").attr("src",result.fileName)
+						$("#pic").val(result.fileName)
+					}
+				},
+				error: function(error) {
+					alert("图片上传失败。");
+				}
+			});
+		})
+	</script>
+</body>
+</html>
