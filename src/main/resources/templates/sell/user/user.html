@@ -12,8 +12,6 @@
 <div class="ui-layout-center">
     <div class="container-div">
         <div class="row">
-
-
             <div class="btn-group-sm" id="toolbar" role="group">
                 <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="sell:user:add">
                     <i class="fa fa-plus"></i> 新增
@@ -26,16 +24,12 @@
                    shiro:hasPermission="sell:user:remove">
                     <i class="fa fa-remove"></i> 删除
                 </a>
-
             </div>
 
             <div class="col-sm-12 select-table table-striped">
                 <table id="bootstrap-table"></table>
             </div>
-
                 <table id="demo" class="table table-bordered"></table>
-
-
         </div>
     </div>
 </div>
@@ -47,7 +41,6 @@
     var editFlag = [[${@permission.hasPermi('sell:user:edit')}]];
     var removeFlag = [[${@permission.hasPermi('sell:user:remove')}]];
     var listFlag = [[${@permission.hasPermi('sell:user:list')}]];
-
     var prefix = ctx + "sell/user";
 
     $(function () {
@@ -144,7 +137,6 @@
                     ]]
             })
             ;
-
         });
 
     }
