@@ -1,14 +1,12 @@
 package com.ruoyi.project.project.task.controller;
 
-import com.ruoyi.common.constant.UserConstants;
 import com.ruoyi.framework.aspectj.lang.annotation.Log;
 import com.ruoyi.framework.aspectj.lang.enums.BusinessType;
 import com.ruoyi.framework.web.controller.BaseController;
 import com.ruoyi.framework.web.domain.AjaxResult;
 import com.ruoyi.framework.web.page.TableDataInfo;
-import com.ruoyi.project.project.task.domain.Task;
-import com.ruoyi.project.project.task.service.ITaskService;
-import com.ruoyi.project.system.post.domain.Post;
+import com.ruoyi.project.project.task.domain.Task1;
+import com.ruoyi.project.project.task.service.IProjectTaskService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,12 +18,12 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/project/task")
-public class TaskController extends BaseController {
+public class ProjectTaskController extends BaseController {
 
     private String prefix = "project/task";
 
     @Autowired
-    private ITaskService taskService;
+    private IProjectTaskService taskService;
 
     @RequiresPermissions("project:task:view")
     @GetMapping()
@@ -40,7 +38,7 @@ public class TaskController extends BaseController {
     public TableDataInfo list()
     {
         startPage();
-        List<Task> list = taskService.selectTaskAll();
+        List<Task1> list = taskService.selectTaskAll();
         return getDataTable(list);
 
     }
@@ -57,7 +55,7 @@ public class TaskController extends BaseController {
     @Log(title = "岗位管理", businessType = BusinessType.UPDATE)
     @PostMapping("/edit")
     @ResponseBody
-    public AjaxResult editSave(@Validated Task task)
+    public AjaxResult editSave(@Validated Task1 task)
     {
 
         return toAjax(taskService.updateTask(task));
@@ -69,7 +67,7 @@ public class TaskController extends BaseController {
      */
     @PostMapping("/checktaskContentNameUnique")
     @ResponseBody
-    public String checktaskContentNameUnique(Task task)
+    public String checktaskContentNameUnique(Task1 task)
     {
         return null;
 //        taskService.checktaskContentNameUnique(task);

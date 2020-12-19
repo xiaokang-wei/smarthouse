@@ -7,8 +7,6 @@ import com.ruoyi.framework.web.domain.AjaxResult;
 import com.ruoyi.framework.web.page.TableDataInfo;
 import com.ruoyi.project.project.check.domain.Check;
 import com.ruoyi.project.project.check.service.ICheckService;
-import com.ruoyi.project.project.degree.domain.Degree;
-import com.ruoyi.project.project.task.domain.Task;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

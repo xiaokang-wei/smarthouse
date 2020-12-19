@@ -8,7 +8,7 @@ import java.util.Date;
 
 
 @Data
-public class Task {
+public class Task1 {
 
     private int pid;
     private String pname;

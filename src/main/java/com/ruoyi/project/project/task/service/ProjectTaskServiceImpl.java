@@ -1,36 +1,33 @@
 package com.ruoyi.project.project.task.service;
 
-import com.ruoyi.common.constant.UserConstants;
-import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.project.project.task.domain.Task;
-import com.ruoyi.project.project.task.mapper.TaskMapper;
-import com.ruoyi.project.system.post.domain.Post;
+import com.ruoyi.project.project.task.domain.Task1;
+import com.ruoyi.project.project.task.mapper.ProjectTaskMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class TaskServiceImpl implements ITaskService {
+public class ProjectTaskServiceImpl implements IProjectTaskService {
 
     @Autowired
-    private TaskMapper taskMapper;
+    private ProjectTaskMapper projectTaskMapper;
 
 
     @Override
-    public List<Task> selectTaskAll() {
-        return taskMapper.selectTaskAll();
+    public List<Task1> selectTaskAll() {
+        return projectTaskMapper.selectTaskAll();
     }
 
     @Override
-    public Task selecttaskDistributionById(int pid) {
-        return taskMapper.selecttaskDistributionById(pid);
+    public Task1 selecttaskDistributionById(int pid) {
+        return projectTaskMapper.selecttaskDistributionById(pid);
     }
 
 
     @Override
-    public int updateTask(Task task) {
-        return taskMapper.updateTask(task);
+    public int updateTask(Task1 task) {
+        return projectTaskMapper.updateTask(task);
     }
 
 

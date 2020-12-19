@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ruoyi.project.project.task.mapper.TaskMapper">
+<mapper namespace="com.ruoyi.project.project.task.mapper.ProjectTaskMapper">
 
-	<resultMap type="com.ruoyi.project.project.task.domain.Task" id="TaskResult">
+	<resultMap type="com.ruoyi.project.project.task.domain.Task1" id="TaskResult">
 		<id     property="pid"        column="p_id"       />
 		<result property="pname"      column="p_name"     />
 		<result property="ptype"      column="p_type"     />
@@ -27,7 +27,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 
 
-	<update id="updateTask"  parameterType="com.ruoyi.project.project.task.domain.Task">
+	<update id="updateTask"  parameterType="com.ruoyi.project.project.task.domain.Task1">
 		update t_projectmanager
 		<set>
 			<if test="ptask != null and ptask != ''">p_task = #{ptask},</if>
